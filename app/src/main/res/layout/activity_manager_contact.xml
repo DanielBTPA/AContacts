@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.alphap.acontacts.manager.ManagerContactActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/idTvManagerTitlePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="25dp"
+            android:text="@string/stManagerTitlePic"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/idIvManagerPic"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_below="@+id/idTvManagerTitlePic"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/personal_image" />
+
+        <EditText
+            android:id="@+id/idEtManagerName"
+            android:layout_width="200dp"
+            android:inputType="textCapWords"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/idIvManagerPic"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+            android:hint="@string/stManagerHintEtNameInfo"
+            />
+
+        <EditText
+            android:id="@+id/idEtManagerPhone"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/idEtManagerName"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+            android:inputType="phone"
+            android:hint="@string/stManagerHintEtPhoneInfo1"
+            />
+
+        <Spinner
+            android:id="@+id/idSpManagerSelectedType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idEtManagerPhone"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="17dp"
+            android:spinnerMode="dialog"/>
+
+
+    </RelativeLayout>
+
+</ScrollView>

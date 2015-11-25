@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/idActionGridOn"
+        android:icon="@drawable/ic_grid_on_white_24dp"
+        android:onClick="onClickActionModifyGrid"
+        android:title="Ativar modo grade"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/idActionGridOff"
+        android:icon="@drawable/ic_grid_off_white_24dp"
+        android:onClick="onClickActionModifyGrid"
+        android:title="Desativar modo grade"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/idActionAbout"
+        android:title="Sobre"
+        app:showAsAction="never" />
+
+
+</menu>

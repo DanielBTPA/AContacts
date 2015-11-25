@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/idActionCardCall"
+        android:icon="@drawable/ic_call_green_700_24dp"
+        android:title="Ligar"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/idActionCardEdit"
+        android:icon="@drawable/ic_mode_edit_green_700_24dp"
+        android:title="Editar"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/idActionCardDelete"
+        android:icon="@drawable/ic_delete_green_700_24dp"
+        android:title="Apagar Contato"
+        app:showAsAction="ifRoom" />
+
+</menu>

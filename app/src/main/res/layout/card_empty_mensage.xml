@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/idCardInfoEmpty"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="0dp"
+    android:layout_marginRight="3dp"
+    android:layout_marginLeft="3dp"
+    card:cardElevation="3dp"
+    card:cardBackgroundColor="@color/colorCardInfoEmpty"
+    card:cardCornerRadius="7dp"
+    card:cardPreventCornerOverlap="false"
+    card:cardUseCompatPadding="true"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/idCvTvContactEmptyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lista de contatos vazia"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium.Inverse"/>
+
+        <TextView
+            android:id="@+id/idCvTvContactEmptyInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/idCvTvContactEmptyTitle"
+            android:text="Quando for adicionar um contato, clique no botão flutuante abaixo como mostra na imagem:"
+            android:padding="18dp"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small.Inverse"/>
+
+        <ImageView
+            android:id="@+id/idCvIvContactInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="13dp"
+            android:src="@drawable/ilustration_add_contact"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/idCvTvContactEmptyInfo"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

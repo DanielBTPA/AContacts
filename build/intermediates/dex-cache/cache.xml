@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/exploded-aar/com.melnykov/floatingactionbutton/1.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8c6ebb7d087d1a30bf84356bd2aecf85309fc024">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/classes-6b90b0aad23a0ac3cc5b368288de3fed9127d06c.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/exploded-aar/com.android.support/design/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1821601ddbec5ff125653097812823388700af74">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/classes-65ab773691140e27011150a6527d3820f2eea6ff.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="3abb4b88f5a8a0584a9b01d3170d7165f12f8588">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/classes-dd8c6975361c0608686a574269b8d54be8dff790.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/library-2.4.0-b13ed1d52a2a89c3dcb0eb245567e82c7183b049.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/classes-c72a99ae3719dddeec6a820ae73f0845788f3919.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.1-14adfb6ec5b93c93c419e84c7d9f2c7590ba5877.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e1fa5e1123997a55e3ed65b44892993ff4b58cfe">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/classes-9edb3cebbcab76c4eccfbd1ad8d67011b8c15205.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-312a5a77ae3df4979d328e49095429367ca35047.jar" />
+    </item>
+    <item
+        jar="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="/home/danielbt/AndroidStudioProjects/AContacts/app/build/intermediates/pre-dexed/debug/classes-d7b56746c1e15a12576c37e8b986c33cd4940fd6.jar" />
+    </item>
+
+</items>
