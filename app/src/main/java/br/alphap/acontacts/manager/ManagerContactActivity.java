@@ -2,6 +2,7 @@ package br.alphap.acontacts.manager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.Menu;
@@ -148,7 +149,7 @@ public class ManagerContactActivity extends AppCompatActivity {
         contact.setPhone(edPersonalPhone.getText().toString());
 
         Intent intent = getIntent();
-        intent.putExtra("contactData", contact);
+        intent.putExtra("contactData", (Parcelable) contact);
         setResult(RESULT_OK, intent);
     }
 }

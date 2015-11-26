@@ -1,9 +1,12 @@
 package br.alphap.acontacts;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -11,15 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import br.alphap.acontacts.manager.ManagerContactActivity;
+import br.alphap.acontacts.util.Data;
 import br.alphap.acontacts.util.PersonalContact;
 import br.alphap.acontacts.util.PersonalContactAdapter;
 import br.alphap.acontacts.util.PersonalContactList;
@@ -32,19 +36,39 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     private PersonalContactAdapter adapter;
     private FloatingActionButton fab;
 
+    public static final String PATH_DEFAULT_CONTACTS = "AContacts/contacts.pc";
+
     private boolean actionGridEnable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (!Data.isExistFile(PATH_DEFAULT_CONTACTS)) {
+            list = new PersonalContactList();
+            Data.createFilePath(PATH_DEFAULT_CONTACTS);
+        } else {
+            try {
+                if (list == null) {
+                    list = (PersonalContactList) Data.readData(PATH_DEFAULT_CONTACTS);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                list = new PersonalContactList();
+                e.printStackTrace();
+            }
+        }
+
         if (savedInstanceState != null) {
             list = (PersonalContactList) savedInstanceState.getParcelable("savedList");
             menuItemId = savedInstanceState.getInt("menuItemId");
             actionGridEnable = savedInstanceState.getBoolean("actionGridEnable", false);
         } else {
-            list = new PersonalContactList();
-            menuItemId = R.id.idActionGridOff;
+            SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+            menuItemId = sharedPreferences.getInt("menuItemId", R.id.idActionGridOff);
+            actionGridEnable = sharedPreferences.getBoolean("actionGridEnable", false);
+
         }
 
         setContentView(R.layout.activity_list_main);
@@ -107,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     intent.setData(Uri.parse("tel:" + list.getContact(position).getPhone()));
                 } else if (item.getItemId() == R.id.idActionCardEdit) {
                     intent.setClass(getBaseContext(), ManagerContactActivity.class);
-                    intent.putExtra("contactData", list.getContact(position));
+                    intent.putExtra("contactData", (Parcelable) list.getContact(position));
                     intent.putExtra("contactManagerType", ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST);
                     intent.putExtra("personalPosition", position);
                 } else if (item.getItemId() == R.id.idActionCardDelete) {
@@ -132,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
                             View viewContent = findViewById(R.id.idClFab);
 
-                            Snackbar sb = Snackbar.make(viewContent, "Contato '"+ name + "' excluido.", Snackbar.LENGTH_SHORT);
+                            Snackbar sb = Snackbar.make(viewContent, "Contato '" + name + "' excluido.", Snackbar.LENGTH_SHORT);
                             sb.show();
                         }
                     });
@@ -152,6 +176,16 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean("actionGridEnable", actionGridEnable)
+                .putInt("menuItemId", menuItemId).commit();
+
+        Data.writeData(PATH_DEFAULT_CONTACTS, list);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

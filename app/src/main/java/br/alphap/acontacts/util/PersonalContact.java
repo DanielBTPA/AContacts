@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by Daniel on 27/10/2015.
  */
-public class PersonalContact implements Parcelable {
+public class PersonalContact implements Parcelable, Serializable {
 
     private int contactType = 0;
     private String name;
