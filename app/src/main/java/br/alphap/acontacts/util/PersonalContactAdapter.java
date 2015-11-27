@@ -90,6 +90,15 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
 
             if (contact.getPhone() != null || !contact.getPhone().equals("")) {
                 PersonalContact p = list.getContact(holder.getAdapterPosition());
+                switch (p.getContactTypePosition()) {
+                    case 0:
+                        contact.setContactType(context.getResources().getString(R.string.abc_manager_edittext_hint_phone_1));
+                        break;
+                    case 1:
+                        contact.setContactType(context.getResources().getString(R.string.abc_manager_edittext_hint_phone_2));
+                        break;
+                }
+
                 holder.textViewPhone.setText(p.getContactType() + ": " + contact.getPhone());
             }
 

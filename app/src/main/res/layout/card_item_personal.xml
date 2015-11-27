@@ -33,7 +33,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="16dp"
             android:layout_toRightOf="@id/idIvImagePersonalItem"
-            android:text="(Sem nome)"
+            android:text="@string/abc_info_cardview_textview_name"
             android:textSize="11dp"
             android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
             android:layout_below="@id/idTvNamePesonalItem"
             android:layout_marginTop="14dp"
             android:layout_toRightOf="@id/idIvImagePersonalItem"
-            android:text="@string/stListItemPersonalPhone"
+            android:text="@string/abc_info_cardview_textview_phone"
             android:textSize="9dp"
             android:typeface="monospace" />
 
@@ -54,7 +54,6 @@
             android:layout_centerHorizontal="true"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:layout_height="wrap_content"
-            android:title="Telefone"
             android:layout_below="@id/idIvImagePersonalItem">
 
         </android.support.v7.widget.Toolbar>

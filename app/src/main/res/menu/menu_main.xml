@@ -3,24 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/idActionGridOn"
-        android:icon="@drawable/ic_grid_on_white_24dp"
-        android:onClick="onClickActionModifyGrid"
-        android:title="Ativar modo grade"
-        android:visible="false"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/idActionGridOff"
-        android:icon="@drawable/ic_grid_off_white_24dp"
-        android:onClick="onClickActionModifyGrid"
-        android:title="Desativar modo grade"
-        android:visible="false"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/idActionAbout"
-        android:title="Sobre"
+        android:title="@string/abc_main_activity_action_about"
         app:showAsAction="never" />
 
 

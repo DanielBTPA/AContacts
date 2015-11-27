@@ -23,7 +23,7 @@
             android:id="@+id/idCvTvContactEmptyTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lista de contatos vazia"
+            android:text="@string/abc_info_cardview_empty_title"
             android:padding="12dp"
             android:textColor="@android:color/white"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium.Inverse"/>
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/idCvTvContactEmptyTitle"
-            android:text="Quando for adicionar um contato, clique no botão flutuante abaixo como mostra na imagem:"
+            android:text="@string/abc_info_cardview_empty_msg"
             android:padding="18dp"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small.Inverse"/>
 

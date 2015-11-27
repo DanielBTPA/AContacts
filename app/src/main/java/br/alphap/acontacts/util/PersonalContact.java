@@ -1,10 +1,13 @@
 package br.alphap.acontacts.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+
+import br.alphap.acontacts.R;
 
 /**
  * Created by Daniel on 27/10/2015.
@@ -15,28 +18,24 @@ public class PersonalContact implements Parcelable, Serializable {
     private String name;
     private String phone;
     private Bitmap image;
+    private String phoneType;
 
 
-    public void setContactType(int contactType) {
+    public void setContactTypePosition(int contactType) {
         this.contactType = contactType;
-    }
-
-    public String getContactType() {
-        String nameType = null;
-        switch (contactType) {
-            case 0:
-                nameType = "Celular";
-                break;
-            case 1:
-                nameType = "Telefone";
-                break;
-        }
-
-        return nameType;
     }
 
     public int getContactTypePosition() {
         return contactType;
+    }
+
+    public void setContactType(String phoneType) {
+        this.phoneType = phoneType;
+    }
+
+    public String getContactType() {
+
+        return phoneType;
     }
 
     public PersonalContact() {
@@ -60,6 +59,7 @@ public class PersonalContact implements Parcelable, Serializable {
         name = in.readString();
         phone = in.readString();
         image = in.readParcelable(Bitmap.class.getClassLoader());
+        phoneType = in.readString();
     }
 
     public static final Creator<PersonalContact> CREATOR = new Creator<PersonalContact>() {
@@ -109,5 +109,6 @@ public class PersonalContact implements Parcelable, Serializable {
         dest.writeString(name);
         dest.writeString(phone);
         dest.writeParcelable(image, flags);
+        dest.writeString(phoneType);
     }
 }

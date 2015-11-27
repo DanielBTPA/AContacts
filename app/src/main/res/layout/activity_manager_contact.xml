@@ -17,7 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:layout_marginTop="25dp"
-            android:text="@string/stManagerTitlePic"
+            android:text="@string/abc_manager_textview_title_pic"
             android:textSize="15dp"
             android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
             android:layout_below="@+id/idIvManagerPic"
             android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:hint="@string/stManagerHintEtNameInfo"
+            android:hint="@string/abc_manager_edittext_hint_name"
             />
 
         <EditText
@@ -49,7 +49,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
             android:inputType="phone"
-            android:hint="@string/stManagerHintEtPhoneInfo1"
+            android:hint="@string/abc_manager_edittext_hint_phone_1"
             />
 
         <Spinner
