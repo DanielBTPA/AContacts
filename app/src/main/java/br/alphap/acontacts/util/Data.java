@@ -15,11 +15,12 @@ import java.io.ObjectOutputStream;
  */
 public class Data {
 
-    public static void writeData(String pathFile, Object record) {
+    private static final String PATH_DEFAULT_SDCARD = Environment.getExternalStorageDirectory() + "/";
 
-        String fileName = Environment.getExternalStorageDirectory() + "/" + pathFile;
+    public static File writeData(String pathFile, Object record) {
+        String fileName = PATH_DEFAULT_SDCARD + pathFile;
+        File file = new File(fileName);
         try {
-            File file = new File(fileName);
             createFilePath(pathFile);
 
             ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file));
@@ -29,7 +30,19 @@ public class Data {
         } catch (IOException e) {
             Log.e("MyApp", "IO Exception: " + e);
         }
+        return file;
+    }
 
+    public static boolean deleteIfExist(String path) {
+        File file = new File(PATH_DEFAULT_SDCARD + path);
+
+        boolean isDeleted = false;
+
+        if (file.exists()) {
+            isDeleted = file.delete();
+        }
+
+        return isDeleted;
     }
 
     public static Object readData(String pathName) throws IOException, ClassNotFoundException {
