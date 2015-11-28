@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.File;
 import java.io.IOException;
 
 import br.alphap.acontacts.manager.ManagerContactActivity;
@@ -33,25 +34,27 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     private PersonalContactAdapter adapter;
     private FloatingActionButton fab;
 
-    public static final String PATH_DEFAULT_CONTACTS = "AContacts/contacts.pc";
+    /*
+       OLD = "AContacts/contacts.pc"
+       NEW = "AContacts/data/contacts.pc"
+     */
+    public static final String PATH_DEFAULT_CONTACTS = "AContacts/data/contacts.pc";
+    public static final String OLD_PATH_CONTACTS = "AContacts/contacts.pc";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (!Data.isExistFile(PATH_DEFAULT_CONTACTS)) {
-            list = new PersonalContactList();
-            Data.createFilePath(PATH_DEFAULT_CONTACTS);
-        } else {
+            Data.writeData(PATH_DEFAULT_CONTACTS, new PersonalContactList());
+        }
+
+        if (list == null) {
             try {
-                if (list == null) {
-                    list = (PersonalContactList) Data.readData(PATH_DEFAULT_CONTACTS);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+
+                String path = Data.isExistFile(OLD_PATH_CONTACTS) ? OLD_PATH_CONTACTS : PATH_DEFAULT_CONTACTS;
+                list = (PersonalContactList) Data.readData(path);
+            } catch (Exception e) {
                 list = new PersonalContactList();
-                e.printStackTrace();
             }
         }
 
@@ -88,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             }
 
         });
+
+
 
     }
 
@@ -176,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     protected void onStop() {
         super.onStop();
 
+        Data.deleteIfExist(OLD_PATH_CONTACTS);
         Data.writeData(PATH_DEFAULT_CONTACTS, list);
     }
 
