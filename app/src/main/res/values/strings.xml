@@ -16,6 +16,7 @@
     <string name="abc_cardview_info_action_edit">Editar</string>
     <string name="abc_cardview_info_action_delete">Apagar contato</string>
     <string name="abc_info_contact_saved">Contato salvo.</string>
+    <string name="abc_info_contact_edited">Contato editado.</string>
     <string name="abc_info_without_number_1">Coloque o numero de celular!</string>
     <string name="abc_info_without_number_2">Coloque o numero de telefone!</string>
     <string name="abc_info_cardview_textview_name">(Sem nome)</string>
