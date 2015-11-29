@@ -1,13 +1,10 @@
 package br.alphap.acontacts.util;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-
-import br.alphap.acontacts.R;
 
 /**
  * Created by Daniel on 27/10/2015.
@@ -110,5 +107,16 @@ public class PersonalContact implements Parcelable, Serializable {
         dest.writeString(phone);
         dest.writeParcelable(image, flags);
         dest.writeString(phoneType);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof PersonalContact) {
+            PersonalContact contact = (PersonalContact) o;
+            return this.name.equals(contact.name) &&
+                    this.phone.equals(contact.phone) &&
+                    this.contactType == contact.contactType;
+        }
+        return false;
     }
 }

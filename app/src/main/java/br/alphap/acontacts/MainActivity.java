@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             }
 
         });
-
 
 
     }
@@ -198,32 +198,47 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
             if (requestCode == ManagerContactActivity.MANAGER_CONTACT_ADD_REQUEST) {
                 PersonalContact contact = (PersonalContact) data.getParcelableExtra("contactData");
                 list.putContact(contact);
-
+                Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_saved)
+                        , Snackbar.LENGTH_LONG);
+                sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
+                sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = list.size() - 1;
+                        list.removeContact(pos);
+                        adapter.notifyItemRemoved(pos);
+                    }
+                });
+                sb.show();
             } else if (requestCode == ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST) {
-                PersonalContact contact = (PersonalContact) data.getParcelableExtra("contactData");
-                list.replaceContact(data.getIntExtra("personalPosition", 0), contact);
-            }
-            View viewContent = findViewById(R.id.idClFab);
+                final int position = data.getIntExtra("personalPosition", 0);
+                final PersonalContact contact = (PersonalContact) data.getParcelableExtra("contactData");
+                final PersonalContact oldContact = list.getContact(position);
 
-            Snackbar sb = Snackbar.make(viewContent, getResources().getString(R.string.abc_info_contact_saved)
-                    , Snackbar.LENGTH_LONG);
-            sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
-            sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = list.size() - 1;
-                    list.removeContact(pos);
-                    adapter.notifyItemRemoved(pos);
+                list.replaceContact(position, contact);
+
+                Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_edited)
+                        , Snackbar.LENGTH_LONG);
+
+                if (!contact.equals(oldContact)) {
+                    sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
+                    sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            list.replaceContact(position, oldContact);
+                            adapter.notifyItemChanged(position);
+                        }
+                    });
                 }
-            });
-            sb.show();
+                sb.show();
+            }
         }
     }
 
