@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +25,12 @@ public class ManagerContactActivity extends AppCompatActivity {
     public static final int MANAGER_CONTACT_ADD_REQUEST = 100;
     public static final int MANAGER_CONTACT_EDIT_REQUEST = 200;
 
-
     private ImageView ivPersonalPic;
     private EditText edPersonalName, edPersonalPhone;
     private Spinner spContactType;
     private PersonalContact contact;
+
+    private String[] phonetype;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +40,19 @@ public class ManagerContactActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ivPersonalPic = (ImageView) findViewById(R.id.idIvManagerPic);
-
         edPersonalName = (EditText) findViewById(R.id.idEtManagerName);
 
         edPersonalPhone = (EditText) findViewById(R.id.idEtManagerPhone);
         edPersonalPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         spContactType = (Spinner) findViewById(R.id.idSpManagerSelectedType);
+
+        phonetype = getResources().getStringArray(R.array.spinnerTypes);
+
+        Toast.makeText(this, phonetype[1], Toast.LENGTH_SHORT).show();
+
         SpinnerAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                new String[]{getResources().getString(R.string.abc_manager_edittext_hint_phone_1),
-                        getResources().getString(R.string.abc_manager_edittext_hint_phone_2)});
+                phonetype);
         spContactType.setAdapter(adapter);
 
     }
@@ -62,35 +67,25 @@ public class ManagerContactActivity extends AppCompatActivity {
             if (contact == null) {
                 contact = new PersonalContact();
             }
-            spContactType.setSelection(contact.getContactTypePosition());
+            spContactType.setSelection(contact.getContactType());
         } else if (operation == MANAGER_CONTACT_EDIT_REQUEST) {
             setTitle(getResources().getString(R.string.abc_cardview_info_action_edit));
             contact = (PersonalContact) getIntent().getParcelableExtra("contactData");
             edPersonalName.setText(contact.getName());
             edPersonalPhone.setText(contact.getPhone());
-            spContactType.setSelection(contact.getContactTypePosition());
+            spContactType.setSelection(contact.getContactType());
         }
 
-        if (contact.getImage() != null) {
-            ivPersonalPic.setImageBitmap(contact.getImage());
+        if (contact.getImageData() != null) {
+            ivPersonalPic.setImageBitmap(null);
         }
 
         spContactType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                contact.setContactTypePosition(position);
-
-                switch (contact.getContactTypePosition()) {
-                    case 0:
-                        contact.setContactType(getResources().getString(R.string.abc_manager_edittext_hint_phone_1));
-                        break;
-                    case 1:
-                        contact.setContactType(getResources().getString(R.string.abc_manager_edittext_hint_phone_2));
-                        break;
-                }
-
-                edPersonalPhone.setHint(contact.getContactType());
+                contact.setContactType(position);
+                edPersonalPhone.setHint(phonetype[position]);
             }
 
             @Override
@@ -134,7 +129,7 @@ public class ManagerContactActivity extends AppCompatActivity {
                     finish();
                 } else {
                     String msg = null;
-                    switch (contact.getContactTypePosition()) {
+                    switch (contact.getContactType()) {
                         case 0:
                             msg = getResources().getString(R.string.abc_info_without_number_1);
                             break;

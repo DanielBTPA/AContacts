@@ -1,62 +1,82 @@
 package br.alphap.acontacts.util;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.io.Serializable;
 
 /**
  * Created by Daniel on 27/10/2015.
  */
-public class PersonalContact implements Parcelable, Serializable {
+public class PersonalContact implements Parcelable {
+
+    private int contactId;
 
     private int contactType = 0;
+
     private String name;
     private String phone;
-    private Bitmap image;
-    private String phoneType;
-
-
-    public void setContactTypePosition(int contactType) {
-        this.contactType = contactType;
-    }
-
-    public int getContactTypePosition() {
-        return contactType;
-    }
-
-    public void setContactType(String phoneType) {
-        this.phoneType = phoneType;
-    }
-
-    public String getContactType() {
-
-        return phoneType;
-    }
+    private byte[] picImageData;
 
     public PersonalContact() {
     }
 
-    public PersonalContact(String name, String phone, Bitmap image) {
+
+    public PersonalContact(String name, String phone, byte[] picImageData) {
         this.name = name;
         this.phone = phone;
-        this.image = image;
+        this.picImageData = picImageData;
     }
 
-    public PersonalContact(String name, String phone, Bitmap image, int contactType) {
+    public PersonalContact(String name, String phone, byte[] picImageData, int contactType) {
         this.contactType = contactType;
         this.name = name;
         this.phone = phone;
-        this.image = image;
+        this.picImageData = picImageData;
+    }
+
+    public int getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(int contactId) {
+        this.contactId = contactId;
+    }
+
+    public void setContactType(int contactType) {
+        this.contactType = contactType;
+    }
+
+    public int getContactType() {
+        return contactType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.picImageData = imageData;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public byte[] getImageData() {
+        return picImageData;
     }
 
     protected PersonalContact(Parcel in) {
         contactType = in.readInt();
         name = in.readString();
         phone = in.readString();
-        image = in.readParcelable(Bitmap.class.getClassLoader());
-        phoneType = in.readString();
     }
 
     public static final Creator<PersonalContact> CREATOR = new Creator<PersonalContact>() {
@@ -71,30 +91,6 @@ public class PersonalContact implements Parcelable, Serializable {
         }
     };
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public Bitmap getImage() {
-        return image;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -105,8 +101,6 @@ public class PersonalContact implements Parcelable, Serializable {
         dest.writeInt(contactType);
         dest.writeString(name);
         dest.writeString(phone);
-        dest.writeParcelable(image, flags);
-        dest.writeString(phoneType);
     }
 
     @Override

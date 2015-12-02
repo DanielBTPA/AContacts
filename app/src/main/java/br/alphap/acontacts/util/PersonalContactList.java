@@ -1,22 +1,19 @@
 package br.alphap.acontacts.util;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Created by Daniel on 27/10/2015.
  */
-public class PersonalContactList implements Parcelable, Serializable {
+public class PersonalContactList implements Parcelable {
 
     private ArrayList<PersonalContact> list;
-
-    private transient Context context;
+    private Context context;
 
     public PersonalContactList() {
         list = new ArrayList<>();
@@ -43,16 +40,6 @@ public class PersonalContactList implements Parcelable, Serializable {
 
     public PersonalContactList putContact(PersonalContact contact) {
         list.add(contact);
-        return this;
-    }
-
-    public PersonalContactList putContact(int position, String name, String phone, Bitmap image) {
-        list.add(position, new PersonalContact(name, phone, image));
-        return this;
-    }
-
-    public PersonalContactList putContact(String name, String phone, Bitmap image) {
-        list.add(new PersonalContact(name, phone, image));
         return this;
     }
 

@@ -1,4 +1,4 @@
-package br.alphap.acontacts.util;
+package br.alphap.acontacts.io;
 
 import android.os.Environment;
 import android.util.Log;
@@ -13,9 +13,12 @@ import java.io.ObjectOutputStream;
 /**
  * Created by danielbt on 26/11/15.
  */
-public class Data {
+public class IOData {
 
-    private static final String PATH_DEFAULT_SDCARD = Environment.getExternalStorageDirectory() + "/";
+    public static final String PATH_DEFAULT_APP = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + File.separator + "AContacts";
+    public static String PATH_DEFAULT_SDCARD = Environment.getExternalStorageDirectory()
+            + File.separator;
 
     public static File writeData(String pathFile, Object record) {
         String fileName = PATH_DEFAULT_SDCARD + pathFile;
@@ -47,7 +50,7 @@ public class Data {
 
     public static Object readData(String pathName) throws IOException, ClassNotFoundException {
         Object object = null;
-        String fileName = Environment.getExternalStorageDirectory().getPath() + "/" + pathName;
+        String fileName = PATH_DEFAULT_SDCARD + "/" + pathName;
 
         ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileName));
         object = inputStream.readObject();
@@ -76,19 +79,20 @@ public class Data {
     }
 
     public static boolean isExistFile(String filePath) {
-        String sdCard = Environment.getExternalStorageDirectory() + "/";
-        return new File(sdCard + filePath).exists();
+        return new File(PATH_DEFAULT_SDCARD + filePath).exists();
     }
 
     public static File createFilePath(String pathName) {
-        String sdCard = Environment.getExternalStorageDirectory() + "/";
-        File file = new File(sdCard + pathName);
+        File file = new File(PATH_DEFAULT_SDCARD + pathName);
         if (!file.exists()) {
             try {
                 if (!file.getParent().equals("")) {
                     new File(file.getParent()).mkdirs();
                 }
-                file.createNewFile();
+
+                if (!file.getName().equals("")) {
+                    file.createNewFile();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

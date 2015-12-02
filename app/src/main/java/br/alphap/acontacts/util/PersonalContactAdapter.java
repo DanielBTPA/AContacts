@@ -1,6 +1,8 @@
 package br.alphap.acontacts.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -80,8 +82,9 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
             PersonalContactVH holder = (PersonalContactVH) viewHolder;
             PersonalContact contact = list.getContact(position);
 
-            if (contact.getImage() != null) {
-                holder.imageViewPersonal.setImageBitmap(contact.getImage());
+            if (contact.getImageData() != null) {
+                Bitmap pic = BitmapFactory.decodeByteArray(contact.getImageData(), 0, contact.getImageData().length);
+                holder.imageViewPersonal.setImageBitmap(pic);
             }
 
             if (contact.getName() != null && !contact.getName().equals("")) {
@@ -90,16 +93,9 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
 
             if (contact.getPhone() != null || !contact.getPhone().equals("")) {
                 PersonalContact p = list.getContact(holder.getAdapterPosition());
-                switch (p.getContactTypePosition()) {
-                    case 0:
-                        contact.setContactType(context.getResources().getString(R.string.abc_manager_edittext_hint_phone_1));
-                        break;
-                    case 1:
-                        contact.setContactType(context.getResources().getString(R.string.abc_manager_edittext_hint_phone_2));
-                        break;
-                }
+                String[] types = context.getResources().getStringArray(R.array.spinnerTypes);
 
-                holder.textViewPhone.setText(p.getContactType() + ": " + contact.getPhone());
+                holder.textViewPhone.setText(types[p.getContactType()] + ": " + contact.getPhone());
             }
 
         }

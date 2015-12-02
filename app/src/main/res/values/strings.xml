@@ -9,8 +9,6 @@
     <string name="abc_manager_activity_title_edit">Editar</string>
     <string name="abc_manager_textview_title_pic">Foto de contato:</string>
     <string name="abc_manager_edittext_hint_name">Nome (Opcional)</string>
-    <string name="abc_manager_edittext_hint_phone_1">Celular</string>
-    <string name="abc_manager_edittext_hint_phone_2">Telefone</string>
     <string name="abc_cardview_info_action_call">Discar</string>
     <string name="abc_cardview_info_action_msg">Mensagem</string>
     <string name="abc_cardview_info_action_edit">Editar</string>
