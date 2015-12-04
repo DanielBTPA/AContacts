@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ChoosePictureButton" >
+        <attr name="actionIcon" format="reference" />
+        <attr name="actionColor" format="color" />
+        <attr name="actionDuration" format="integer" >
+            <enum name="duration_short" value="0"/>
+            <enum name="duration_long" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>

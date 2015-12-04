@@ -49,8 +49,6 @@ public class ManagerContactActivity extends AppCompatActivity {
 
         phonetype = getResources().getStringArray(R.array.spinnerTypes);
 
-        Toast.makeText(this, phonetype[1], Toast.LENGTH_SHORT).show();
-
         SpinnerAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                 phonetype);
         spContactType.setAdapter(adapter);
