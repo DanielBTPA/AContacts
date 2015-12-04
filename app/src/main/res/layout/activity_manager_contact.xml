@@ -30,9 +30,8 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="5dp"
             android:src="@drawable/personal_image"
-            app:actionColor="@android:color/black"
-            app:actionIcon="@drawable/ic_photo_white_24dp"
-            app:actionDuration="duration_long"/>
+            app:actionIcon="@drawable/ic_insert_photo_white_36dp"
+            app:actionDuration="duration_short"/>
 
         <EditText
             android:id="@+id/idEtManagerName"

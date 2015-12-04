@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import br.alphap.acontacts.R;
 import br.alphap.acontacts.util.PersonalContact;
+import br.alphap.acontacts.util.components.ChoosePictureButton;
 
 public class ManagerContactActivity extends AppCompatActivity {
 
@@ -52,6 +53,8 @@ public class ManagerContactActivity extends AppCompatActivity {
         SpinnerAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                 phonetype);
         spContactType.setAdapter(adapter);
+
+        ((ChoosePictureButton) findViewById(R.id.idIvManagerPic)).setActionColor(0x00000);
 
     }
 
