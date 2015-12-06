@@ -1,6 +1,5 @@
 package br.alphap.acontacts.util.components;
 
-import android.app.Notification;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -8,12 +7,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.media.Image;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +24,7 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
     private static final int VALUE_DEFAULT_ALPHA = 180;
 
     private int alpha = 0;
-    private boolean isClicked = false;
+    private boolean isAnimEnable = false;
     private Bitmap iconLabel;
     private int colorLabelId;
     private int duration;
@@ -36,8 +32,8 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
     private Paint paint;
 
     private View.OnClickListener onClick;
-    private int width;
-    private int height;
+    private int width, height;
+    private Rect rect;
 
     public ChoosePictureButton(Context context) {
         super(context);
@@ -69,14 +65,15 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
 
     // Inicia as operações dessa classe.
     private void init() {
-        paint = new Paint();
         super.setClickable(true);
         super.setOnClickListener(this);
         this.setOnTouchListener(this);
 
+        paint = new Paint();
         paint.setColor(colorLabelId);
         paint.setAntiAlias(false);
 
+        rect = new Rect(0, 0, width, height);
     }
 
     @Override
@@ -93,15 +90,14 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Log.i("Size", "Width: " + width + " " + "Height: " + height);
-
         paint.setAlpha(alpha);
-        Rect rect = new Rect(0, 0, width, height);
+        rect.set(0, 0, width, height);
         canvas.drawRect(rect, paint);
 
+        // Centraliza o icone no centro.
         if (iconLabel != null) {
-            int posIconX =  (width - iconLabel.getWidth()) >> 1;
-            int posIconY =  (height - iconLabel.getHeight()) >> 1;
+            int posIconX = (width - iconLabel.getWidth()) >> 1;
+            int posIconY = (height - iconLabel.getHeight()) >> 1;
             canvas.drawBitmap(iconLabel, posIconX, posIconY, paint);
         }
     }
@@ -111,9 +107,14 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    /*
+       Se caso o botão for selecionado na tela, é acionado um TouchListener que é tratado, obtendo se
+       'isAnimEnable' for true e ao mesmo tempo se a ação for igual a ação de seleção, dispara o metodo 'onClick'
+       para o dev tratar esse listener pelo 'setOnCLickListener.
+     */
     @Override
     public boolean onTouch(View view, MotionEvent event) {
-        if (isClicked && event.getAction() == MotionEvent.ACTION_UP) {
+        if (isAnimEnable && event.getAction() == MotionEvent.ACTION_UP) {
             if (onClick != null) {
                 onClick.onClick(this);
             }
@@ -142,7 +143,7 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
             public void run() {
                 super.run();
 
-                isClicked = true;
+                isAnimEnable = true;
 
                 startAnim(+1);
 
@@ -150,7 +151,7 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
 
                 startAnim(-1);
 
-                isClicked = false;
+                isAnimEnable = false;
             }
         }.start();
 
@@ -158,7 +159,7 @@ public class ChoosePictureButton extends ImageView implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        if (!isClicked) {
+        if (!isAnimEnable) {
             animateImageView();
         }
     }

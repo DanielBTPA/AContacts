@@ -9,4 +9,5 @@
     <color name="colorRippleFab">#01579B</color>
     <color name="colorCardInfoEmpty">#1B5E20</color>
     <color name="colorCardInfoEmptyButtonText">#81C784</color>
+    <color name="colorChooseButtonDefaultLabel">#01579B</color>
 </resources>

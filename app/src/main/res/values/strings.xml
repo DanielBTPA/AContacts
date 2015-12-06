@@ -23,4 +23,6 @@
     <string name="abc_info_cardview_empty_msg">Quando for adicionar um contato, clique no botão flutuante abaixo como mostra na imagem:</string>
     <string name="abc_info_contact_delete_unformated">Deseja excluir N dos contatos?</string>
     <string name="abc_info_contact_deleted_unformated">Contato N excluido!</string>
+    <string name="abc_restore_label_activity">Remover foto</string>
+    <string name="abc_info_photo_removed">Foto removida!</string>
 </resources>

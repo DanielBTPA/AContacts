@@ -1,8 +1,12 @@
 package br.alphap.acontacts.io;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.support.annotation.RequiresPermission;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -99,6 +103,21 @@ public class IOData {
         }
 
         return file;
+    }
+
+    public static byte[] encodeBitmap(Bitmap b) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        if (b != null) {
+            b.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        }
+
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public static Bitmap decodeBitmap(byte[] data) {
+        Bitmap newImage = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+        return newImage;
     }
 
 }

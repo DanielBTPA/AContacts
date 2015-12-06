@@ -1,11 +1,28 @@
 package br.alphap.acontacts.manager;
 
+import android.annotation.SuppressLint;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Parcelable;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +34,11 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.alphap.acontacts.R;
+import br.alphap.acontacts.io.IOData;
 import br.alphap.acontacts.util.PersonalContact;
 import br.alphap.acontacts.util.components.ChoosePictureButton;
 
@@ -26,16 +47,26 @@ public class ManagerContactActivity extends AppCompatActivity {
     public static final int MANAGER_CONTACT_ADD_REQUEST = 100;
     public static final int MANAGER_CONTACT_EDIT_REQUEST = 200;
 
+    private static final int CHOOSE_OR_TAKE_PIC_REQUEST = 300;
+
+    private static PersonalContact contact;
+
     private ImageView ivPersonalPic;
     private EditText edPersonalName, edPersonalPhone;
     private Spinner spContactType;
-    private PersonalContact contact;
 
     private String[] phonetype;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            contact = (PersonalContact) savedInstanceState.getParcelable("savedContact");
+        } else {
+            contact = new PersonalContact();
+        }
+
         setContentView(R.layout.activity_manager_contact);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -54,8 +85,6 @@ public class ManagerContactActivity extends AppCompatActivity {
                 phonetype);
         spContactType.setAdapter(adapter);
 
-        ((ChoosePictureButton) findViewById(R.id.idIvManagerPic)).setActionColor(0x00000);
-
     }
 
     @Override
@@ -65,9 +94,6 @@ public class ManagerContactActivity extends AppCompatActivity {
 
         if (operation == MANAGER_CONTACT_ADD_REQUEST) {
             setTitle(getResources().getString(R.string.abc_manager_activity_title_add));
-            if (contact == null) {
-                contact = new PersonalContact();
-            }
             spContactType.setSelection(contact.getContactType());
         } else if (operation == MANAGER_CONTACT_EDIT_REQUEST) {
             setTitle(getResources().getString(R.string.abc_cardview_info_action_edit));
@@ -75,10 +101,6 @@ public class ManagerContactActivity extends AppCompatActivity {
             edPersonalName.setText(contact.getName());
             edPersonalPhone.setText(contact.getPhone());
             spContactType.setSelection(contact.getContactType());
-        }
-
-        if (contact.getImageData() != null) {
-            ivPersonalPic.setImageBitmap(null);
         }
 
         spContactType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -98,15 +120,27 @@ public class ManagerContactActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("savedContact", contact);
+    protected void onResume() {
+        super.onResume();
+
+        if (contact.getImageData() != null) {
+            final Bitmap bitmapOp = contact.getImageData();
+            ivPersonalPic.post(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap b = Bitmap.createScaledBitmap(bitmapOp, View.MeasureSpec.getSize(ivPersonalPic.getMeasuredWidth()),
+                            View.MeasureSpec.getSize(ivPersonalPic.getMeasuredHeight()), true);
+                    ivPersonalPic.setImageBitmap(b);
+                }
+            });
+
+        }
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        contact = (PersonalContact) savedInstanceState.getParcelable("savedContact");
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("savedContact", contact);
     }
 
     @Override
@@ -115,9 +149,78 @@ public class ManagerContactActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public Intent getPickImageIntent() {
+        Intent chooserIntent = null;
+
+        List<Intent> intentList = new ArrayList<>();
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intentClearImage = new Intent(this, RestoreToDefaultImage.class);
+        intentClearImage.setFlags(Intent.FLAG_FROM_BACKGROUND);
+
+        intentList.add(pickIntent);
+        if (contact.getImageData() != null) {
+            intentList.add(intentClearImage);
+        }
+        intentList.add(takePhotoIntent);
+
+
+        chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),
+                getResources().getString(R.string.abc_manager_textview_title_pic).replace(":", ""));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
+
+        return chooserIntent;
+    }
+
+    public void onClickChoosePicture(View view) {
+        startActivityForResult(getPickImageIntent(), CHOOSE_OR_TAKE_PIC_REQUEST);
+    }
+
+    @SuppressLint("NewApi")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CHOOSE_OR_TAKE_PIC_REQUEST) {
+            if (resultCode == RESULT_OK) {
+               if (data != null) {
+                   Bitmap getImageBitmap = null;
+
+                   if (data.getExtras() != null) {
+                       getImageBitmap = (Bitmap) data.getExtras().get("data");
+                   } else {
+                       if (data.getData() != null) {
+                           Cursor cursor = getContentResolver().query(data.getData(), new String[]{MediaStore.Images.Media.DATA}, null, null, null, null);
+                           cursor.moveToFirst();
+                           String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                           getImageBitmap = BitmapFactory.decodeFile(path);
+                       }
+
+                       getImageBitmap = scaleDownBitmap(getImageBitmap, 120);
+                   }
+                   contact.setImageData(getImageBitmap);
+               } else {
+                   ivPersonalPic.setImageResource(R.drawable.personal_image);
+                   contact.setImageData(null);
+               }
+            }
+        }
+    }
+
+    public Bitmap scaleDownBitmap(Bitmap photo, int newHeight) {
+
+        final float densityMultiplier = getResources().getDisplayMetrics().density;
+
+        int h = (int) (newHeight * densityMultiplier);
+        int w = (h * photo.getWidth() / photo.getHeight());
+
+        photo = Bitmap.createScaledBitmap(photo, w, h, true);
+
+        return photo;
     }
 
     @Override
@@ -156,7 +259,24 @@ public class ManagerContactActivity extends AppCompatActivity {
         contact.setPhone(edPersonalPhone.getText().toString());
 
         Intent intent = getIntent();
-        intent.putExtra("contactData", (Parcelable) contact);
+        intent.putExtra("contactData", contact);
         setResult(RESULT_OK, intent);
+    }
+
+    public static class RestoreToDefaultImage extends AppCompatActivity {
+
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            this.setResult(RESULT_OK, null);
+            Toast.makeText(this, getResources().getString(R.string.abc_info_photo_removed), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onResume() {
+            super.onResume();
+            finish();
+        }
     }
 }

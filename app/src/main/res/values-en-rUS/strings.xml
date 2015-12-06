@@ -26,4 +26,6 @@
     <string name="abc_info_cardview_empty_msg">When adding a contact, click the button below floating as shown in the image:</string>
     <string name="abc_info_contact_delete_unformated">Do you want delete N of contacts ?</string>
     <string name="abc_info_contact_deleted_unformated">Contact N excluded !</string>
+    <string name="abc_restore_label_activity">Remove picture</string>
+    <string name="abc_info_photo_removed">Picture removed!</string>
 </resources>

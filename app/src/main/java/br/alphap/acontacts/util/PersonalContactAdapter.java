@@ -80,11 +80,21 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
         if (!list.isEmpty()) {
 
             PersonalContactVH holder = (PersonalContactVH) viewHolder;
-            PersonalContact contact = list.getContact(position);
+            final PersonalContact contact = list.getContact(position);
 
             if (contact.getImageData() != null) {
-                Bitmap pic = BitmapFactory.decodeByteArray(contact.getImageData(), 0, contact.getImageData().length);
-                holder.imageViewPersonal.setImageBitmap(pic);
+                final ImageView imageView = holder.imageViewPersonal;
+                imageView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int width = View.MeasureSpec.getSize(imageView.getMeasuredWidth());
+                        int height = View.MeasureSpec.getSize(imageView.getMeasuredHeight());
+
+                        Bitmap newBitmap = Bitmap.createScaledBitmap(contact.getImageData(), width, height, true);
+                        imageView.setImageBitmap(newBitmap);
+                    }
+                });
+
             }
 
             if (contact.getName() != null && !contact.getName().equals("")) {

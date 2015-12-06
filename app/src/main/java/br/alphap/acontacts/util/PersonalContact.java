@@ -1,5 +1,6 @@
 package br.alphap.acontacts.util;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,28 +10,26 @@ import android.os.Parcelable;
 public class PersonalContact implements Parcelable {
 
     private int contactId;
-
     private int contactType = 0;
-
     private String name;
     private String phone;
-    private byte[] picImageData;
+    private Bitmap imageData;
 
     public PersonalContact() {
     }
 
 
-    public PersonalContact(String name, String phone, byte[] picImageData) {
+    public PersonalContact(String name, String phone, Bitmap imageData) {
         this.name = name;
         this.phone = phone;
-        this.picImageData = picImageData;
+        this.imageData = imageData;
     }
 
-    public PersonalContact(String name, String phone, byte[] picImageData, int contactType) {
+    public PersonalContact(String name, String phone, Bitmap imageData, int contactType) {
         this.contactType = contactType;
         this.name = name;
         this.phone = phone;
-        this.picImageData = picImageData;
+        this.imageData = imageData;
     }
 
     public int getContactId() {
@@ -57,8 +56,8 @@ public class PersonalContact implements Parcelable {
         this.phone = phone;
     }
 
-    public void setImageData(byte[] imageData) {
-        this.picImageData = imageData;
+    public void setImageData(Bitmap imageData) {
+        this.imageData = imageData;
     }
 
     public String getName() {
@@ -69,14 +68,15 @@ public class PersonalContact implements Parcelable {
         return phone;
     }
 
-    public byte[] getImageData() {
-        return picImageData;
+    public Bitmap getImageData() {
+        return imageData;
     }
 
-    protected PersonalContact(Parcel in) {
+    public PersonalContact(Parcel in) {
         contactType = in.readInt();
         name = in.readString();
         phone = in.readString();
+        imageData = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     public static final Creator<PersonalContact> CREATOR = new Creator<PersonalContact>() {
@@ -101,6 +101,7 @@ public class PersonalContact implements Parcelable {
         dest.writeInt(contactType);
         dest.writeString(name);
         dest.writeString(phone);
+        dest.writeParcelable(imageData, flags);
     }
 
     @Override

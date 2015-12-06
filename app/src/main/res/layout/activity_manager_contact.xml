@@ -30,8 +30,10 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="5dp"
             android:src="@drawable/personal_image"
+            android:onClick="onClickChoosePicture"
+            app:actionColor="@color/colorChooseButtonDefaultLabel"
             app:actionIcon="@drawable/ic_insert_photo_white_36dp"
-            app:actionDuration="duration_short"/>
+            app:actionDuration="duration_long"/>
 
         <EditText
             android:id="@+id/idEtManagerName"

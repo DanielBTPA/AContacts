@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import br.alphap.acontacts.io.IOData;
 import br.alphap.acontacts.util.PersonalContact;
 import br.alphap.acontacts.util.PersonalContactList;
 
@@ -26,7 +27,10 @@ public class ADatabaseManager {
         ContentValues values = new ContentValues();
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[1], newContact.getName());
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[2], newContact.getPhone());
-        // values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], newContact.getImageData());
+
+        byte[] data = IOData.encodeBitmap(newContact.getImageData());
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], data);
+
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[4], newContact.getContactType());
 
         db.insert(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
@@ -42,7 +46,7 @@ public class ADatabaseManager {
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[0], list.getContact(pos).getContactId());
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[1], newContact.getName());
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[2], newContact.getPhone());
-        // values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], contact.getImageData());
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], IOData.encodeBitmap(newContact.getImageData()));
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[4], newContact.getContactType());
         db.replace(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
         listRecent.replaceContact(pos, newContact);
@@ -51,7 +55,7 @@ public class ADatabaseManager {
 
     public void delete(int pos, PersonalContactList list) {
         SQLiteDatabase db = getDB.getWritableDatabase();
-        db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[] {""+list.getContact(pos).getContactId()});
+        db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[]{"" + list.getContact(pos).getContactId()});
         list.removeContact(pos);
         db.close();
     }
@@ -73,7 +77,7 @@ public class ADatabaseManager {
                 contact.setContactId(cursor.getInt(0));
                 contact.setName(cursor.getString(1));
                 contact.setPhone(cursor.getString(2));
-                contact.setImageData(cursor.getBlob(3));
+                contact.setImageData(IOData.decodeBitmap(cursor.getBlob(3)));
                 contact.setContactType(cursor.getInt(4));
 
                 list.putContact(contact);
