@@ -3,6 +3,7 @@ package br.alphap.acontacts;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import br.alphap.acontacts.io.database.ADatabaseManager;
+import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
 import br.alphap.acontacts.manager.ManagerContactActivity;
 import br.alphap.acontacts.util.PersonalContact;
 import br.alphap.acontacts.util.PersonalContactAdapter;
@@ -31,12 +33,16 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
     private ADatabaseManager databaseManager;
 
+    private ADatabaseOpenHelper openHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_main);
 
-        databaseManager = new ADatabaseManager(this);
+        openHelper = new ADatabaseOpenHelper(this);
+
+        databaseManager = new ADatabaseManager(openHelper);
 
         recyclerView = (RecyclerView) findViewById(R.id.idRvListMain);
         recyclerView.setHasFixedSize(true);
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     @Override
     protected void onStop() {
         super.onStop();
-        databaseManager.getSqLiteOpenHelper().close();
+        openHelper.close();
     }
 
     // Cria o menu na ActionBar
