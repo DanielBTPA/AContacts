@@ -5,10 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
-import br.alphap.acontacts.io.IOData;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import br.alphap.acontacts.util.PersonalContact;
-import br.alphap.acontacts.util.PersonalContactList;
 
 /**
  * Created by danielbt on 01/12/15.
@@ -17,47 +21,45 @@ public class ADatabaseManager {
 
     private ADatabaseOpenHelper getDB;
 
-
     public ADatabaseManager(Context context) {
         getDB = new ADatabaseOpenHelper(context);
     }
 
-    public PersonalContactList insert(PersonalContact newContact) {
+    public void insert(PersonalContact newContact) {
         SQLiteDatabase db = getDB.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[1], newContact.getName());
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[2], newContact.getPhone());
-
-        byte[] data = IOData.encodeBitmap(newContact.getImageData());
-        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], data);
-
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], encodeBitmap(newContact.getImageData()));
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[4], newContact.getContactType());
 
         db.insert(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
         db.close();
-
-        return getData();
     }
 
-    public void replace(int pos, PersonalContact newContact, PersonalContactList listRecent) {
-        PersonalContactList list = getData();
+    public void replace(int pos, PersonalContact newContact) {
+        List<PersonalContact> list = getData();
         SQLiteDatabase db = getDB.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[0], list.getContact(pos).getContactId());
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[0], list.get(pos).getContactId());
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[1], newContact.getName());
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[2], newContact.getPhone());
-        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], IOData.encodeBitmap(newContact.getImageData()));
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], encodeBitmap(newContact.getImageData()));
         values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[4], newContact.getContactType());
         db.replace(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
-        listRecent.replaceContact(pos, newContact);
         db.close();
     }
 
-    public void delete(int pos, PersonalContactList list) {
+    public void delete(int pos) {
+        List<PersonalContact> list = getData();
         SQLiteDatabase db = getDB.getWritableDatabase();
-        db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[]{"" + list.getContact(pos).getContactId()});
-        list.removeContact(pos);
+        db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[]{"" + list.get(pos).getContactId()});
         db.close();
+    }
+
+    public PersonalContact get(int pos) {
+        List<PersonalContact> list = getData();
+        return list.get(pos);
     }
 
     public Cursor queryDatabase() {
@@ -67,8 +69,8 @@ public class ADatabaseManager {
         return cursor;
     }
 
-    public PersonalContactList getData() {
-        PersonalContactList list = new PersonalContactList();
+    public List<PersonalContact> getData() {
+        List<PersonalContact> list = new ArrayList<>();
         Cursor cursor = queryDatabase();
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -77,15 +79,47 @@ public class ADatabaseManager {
                 contact.setContactId(cursor.getInt(0));
                 contact.setName(cursor.getString(1));
                 contact.setPhone(cursor.getString(2));
-                contact.setImageData(IOData.decodeBitmap(cursor.getBlob(3)));
+                contact.setImageData(decodeBitmap(cursor.getBlob(3)));
                 contact.setContactType(cursor.getInt(4));
 
-                list.putContact(contact);
+                list.add(contact);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         return list;
+    }
+
+    public int size() {
+        return queryDatabase().getCount();
+    }
+
+    public boolean isEmpty() {
+        return queryDatabase().getCount() <= 0;
+    }
+
+    public SQLiteOpenHelper getSqLiteOpenHelper() {
+        return getDB;
+    }
+
+    private byte[] encodeBitmap(Bitmap b) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        if (b != null) {
+            b.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        }
+
+        return (byteArrayOutputStream.size() == 0) ? null : byteArrayOutputStream.toByteArray();
+    }
+
+    private Bitmap decodeBitmap(byte[] data) {
+        Bitmap newImage = null;
+
+        if (data != null) {
+            newImage = BitmapFactory.decodeByteArray(data, 0, data.length);
+        }
+
+        return newImage;
     }
 
 }

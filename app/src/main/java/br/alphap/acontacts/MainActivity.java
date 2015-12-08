@@ -21,13 +21,11 @@ import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.manager.ManagerContactActivity;
 import br.alphap.acontacts.util.PersonalContact;
 import br.alphap.acontacts.util.PersonalContactAdapter;
-import br.alphap.acontacts.util.PersonalContactList;
 import br.alphap.acontacts.util.RecyclerViewScrollDetector;
 
 public class MainActivity extends AppCompatActivity implements PersonalContactAdapter.OnItemClickListenerProvider {
 
     private RecyclerView recyclerView;
-    private PersonalContactList list;
     private PersonalContactAdapter adapter;
     private FloatingActionButton fab;
 
@@ -39,12 +37,11 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         setContentView(R.layout.activity_list_main);
 
         databaseManager = new ADatabaseManager(this);
-        list = databaseManager.getData();
 
         recyclerView = (RecyclerView) findViewById(R.id.idRvListMain);
         recyclerView.setHasFixedSize(true);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || list.isEmpty()) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || databaseManager.isEmpty()) {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -77,14 +74,16 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     protected void onStart() {
         super.onStart();
 
-        adapter = new PersonalContactAdapter(this, list);
+        adapter = new PersonalContactAdapter(this, databaseManager);
+        recyclerView.setAdapter(adapter);
+
         adapter.setOnItemClickListenerProvider(this);
 
         adapter.setOnCardMenuItemClickListener(new PersonalContactAdapter.OnCardMenuItemListener() {
             @Override
             public boolean onItemSelected(MenuItem item, View view, final int position) {
                 Intent intent = new Intent();
-                String number = list.getContact(position).getPhone();
+                String number = databaseManager.get(position).getPhone();
 
                 if (item.getItemId() == R.id.idActionCardCall) {
                     intent.setAction(Intent.ACTION_DIAL);
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     intent.setData(Uri.parse("sms:" + number));
                 } else if (item.getItemId() == R.id.idActionCardEdit) {
                     intent.setClass(getBaseContext(), ManagerContactActivity.class);
-                    intent.putExtra("contactData", (Parcelable) list.getContact(position));
+                    intent.putExtra("contactData", (Parcelable) databaseManager.get(position));
                     intent.putExtra("contactManagerType", ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST);
                     intent.putExtra("personalPosition", position);
                 } else if (item.getItemId() == R.id.idActionCardDelete) {
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            if (list.isEmpty()) {
+                            if (databaseManager.isEmpty()) {
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                             }
 
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                                     getMessageFormated(getResources().getString(R.string.abc_info_contact_deleted_unformated), position)
                                     , Snackbar.LENGTH_SHORT);
 
-                            databaseManager.delete(position, list);
+                            databaseManager.delete(position);
                             adapter.notifyItemRemoved(position);
 
                             sb.show();
@@ -130,14 +129,14 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 return false;
             }
         });
-        recyclerView.setAdapter(adapter);
     }
 
     private String getMessageFormated(String modelMsg, int position) {
-        String nome = list.getContact(position).getName();
+        PersonalContact contact = databaseManager.get(position);
+        String nome = contact.getName();
 
         if (nome == null || nome.equals("")) {
-            nome = list.getContact(position).getPhone();
+            nome = contact.getPhone();
         }
 
         modelMsg = modelMsg.replace("N", "'" + nome + "'");
@@ -148,13 +147,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     @Override
     protected void onStop() {
         super.onStop();
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("savedList", list);
+        databaseManager.getSqLiteOpenHelper().close();
     }
 
     // Cria o menu na ActionBar
@@ -172,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         if (resultCode == RESULT_OK) {
             if (requestCode == ManagerContactActivity.MANAGER_CONTACT_ADD_REQUEST) {
                 PersonalContact contact = (PersonalContact) data.getParcelableExtra("contactData");
-                list = databaseManager.insert(contact);
+                databaseManager.insert(contact);
 
                 Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_saved)
                         , Snackbar.LENGTH_LONG);
@@ -180,8 +173,8 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int pos = list.size() - 1;
-                        databaseManager.delete(pos, list);
+                        int pos = databaseManager.size() - 1;
+                        databaseManager.delete(pos);
                         adapter.notifyItemRemoved(pos);
                     }
                 });
@@ -189,9 +182,9 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             } else if (requestCode == ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST) {
                 final int position = data.getIntExtra("personalPosition", 0);
                 final PersonalContact contact = (PersonalContact) data.getParcelableExtra("contactData");
-                final PersonalContact oldContact = list.getContact(position);
+                final PersonalContact oldContact = databaseManager.get(position);
 
-                databaseManager.replace(position, contact, list);
+                databaseManager.replace(position, contact);
 
                 Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_edited)
                         , Snackbar.LENGTH_LONG);
@@ -201,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            databaseManager.replace(position, oldContact, list);
+                            databaseManager.replace(position, oldContact);
                             adapter.notifyItemChanged(position);
                         }
                     });

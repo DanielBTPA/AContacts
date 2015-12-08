@@ -1,28 +1,16 @@
 package br.alphap.acontacts.manager;
 
 import android.annotation.SuppressLint;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,9 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.alphap.acontacts.R;
-import br.alphap.acontacts.io.IOData;
 import br.alphap.acontacts.util.PersonalContact;
-import br.alphap.acontacts.util.components.ChoosePictureButton;
 
 public class ManagerContactActivity extends AppCompatActivity {
 
@@ -160,16 +146,16 @@ public class ManagerContactActivity extends AppCompatActivity {
 
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Intent intentClearImage = new Intent(this, RestoreToDefaultImage.class);
-        intentClearImage.setFlags(Intent.FLAG_FROM_BACKGROUND);
+        intentClearImage.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         intentList.add(pickIntent);
+        intentList.add(takePhotoIntent);
+
         if (contact.getImageData() != null) {
             intentList.add(intentClearImage);
         }
-        intentList.add(takePhotoIntent);
 
-
-        chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),
+        chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 2),
                 getResources().getString(R.string.abc_manager_textview_title_pic).replace(":", ""));
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
 

@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,15 +14,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import br.alphap.acontacts.R;
+import br.alphap.acontacts.io.database.ADatabaseManager;
 
 /**
  * Created by Daniel on 27/10/2015.
  */
-public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private PersonalContactList list;
+
+    private ADatabaseManager databaseManager;
+
     private OnItemClickListenerProvider listener;
     private OnCardMenuItemListener menuItemClickListener;
 
@@ -28,9 +35,9 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final int PCVH = 0;
     private static final int PCVHE = 1;
 
-    public PersonalContactAdapter(Context context, PersonalContactList list) {
+    public PersonalContactAdapter(Context context, ADatabaseManager databaseManager) {
         this.context = context;
-        this.list = list;
+        this.databaseManager = databaseManager;
     }
 
     public void setOnItemClickListenerProvider(OnItemClickListenerProvider listener) {
@@ -43,21 +50,26 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        int viewtype = 0;
+        int viewType;
 
-        if (list.isEmpty()) {
-            viewtype = PCVHE;
+        if (databaseManager.isEmpty()) {
+            viewType = PCVHE;
         } else {
-            viewtype = PCVH;
+            viewType = PCVH;
         }
 
 
-        return viewtype;
+        return viewType;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder holder = null;
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder holder = null;
 
         if (viewType == PCVH) {
             View view = LayoutInflater.from(context).inflate(R.layout.card_item_personal, parent, false);
@@ -72,53 +84,54 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return list.isEmpty() ? PCVHE : list.size();
+        return databaseManager.isEmpty() ? PCVHE : databaseManager.size();
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        if (!list.isEmpty()) {
-
-            PersonalContactVH holder = (PersonalContactVH) viewHolder;
-            final PersonalContact contact = list.getContact(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (viewHolder instanceof PersonalContactVH) {
+            final PersonalContactVH holder = (PersonalContactVH) viewHolder;
+            final PersonalContact contact = databaseManager.get(position);
 
             if (contact.getImageData() != null) {
                 final ImageView imageView = holder.imageViewPersonal;
                 imageView.post(new Runnable() {
                     @Override
                     public void run() {
-                        int width = View.MeasureSpec.getSize(imageView.getMeasuredWidth());
-                        int height = View.MeasureSpec.getSize(imageView.getMeasuredHeight());
+                        int width = imageView.getMeasuredWidth();
+                        int height = imageView.getMeasuredHeight();
 
-                        Bitmap newBitmap = Bitmap.createScaledBitmap(contact.getImageData(), width, height, true);
-                        imageView.setImageBitmap(newBitmap);
+                        Bitmap image = Bitmap.createScaledBitmap(contact.getImageData(), width, height, true);
+                        imageView.setImageBitmap(image);
                     }
                 });
-
+            } else {
+                holder.imageViewPersonal.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.personal_image));
             }
 
             if (contact.getName() != null && !contact.getName().equals("")) {
                 holder.textViewName.setText(contact.getName());
+            } else {
+                holder.textViewName.setText(context.getResources().getString(R.string.abc_info_cardview_textview_name));
             }
 
             if (contact.getPhone() != null || !contact.getPhone().equals("")) {
-                PersonalContact p = list.getContact(holder.getAdapterPosition());
                 String[] types = context.getResources().getStringArray(R.array.spinnerTypes);
-
-                holder.textViewPhone.setText(types[p.getContactType()] + ": " + contact.getPhone());
+                holder.textViewPhone.setText(types[contact.getContactType()] + ": " + contact.getPhone());
             }
-
         }
     }
 
-    protected class ContactEmptyVH extends ViewHolder {
+
+    protected class ContactEmptyVH extends RecyclerView.ViewHolder {
 
         public ContactEmptyVH(View itemView) {
             super(itemView);
         }
     }
 
-    protected class PersonalContactVH extends ViewHolder {
+    protected class PersonalContactVH extends RecyclerView.ViewHolder {
 
         public ImageView imageViewPersonal;
         public TextView textViewName;

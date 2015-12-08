@@ -110,7 +110,8 @@ public class PersonalContact implements Parcelable {
             PersonalContact contact = (PersonalContact) o;
             return this.name.equals(contact.name) &&
                     this.phone.equals(contact.phone) &&
-                    this.contactType == contact.contactType;
+                    this.contactType == contact.contactType &&
+                    (imageData != null ?  imageData.sameAs(contact.imageData) : true);
         }
         return false;
     }

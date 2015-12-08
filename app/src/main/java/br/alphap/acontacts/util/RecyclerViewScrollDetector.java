@@ -18,16 +18,13 @@ public abstract class RecyclerViewScrollDetector extends RecyclerView.OnScrollLi
         if (isSignificantDelta) {
             if (dy > 0) {
                 onScrollUp();
-                Log.i("Abscroll", "Rview up");
             } else {
                 onScrollDown();
-                Log.i("Abscroll", "RView down");
             }
         }
     }
 
     public void setScrollThreshold(int scrollThreshold) {
         mScrollThreshold = scrollThreshold;
-        Log.i("Abscroll", "RView thresh " + scrollThreshold);
     }
 }

@@ -4,27 +4,26 @@
     android:id="@+id/idCardInfo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="0dp"
     android:layout_marginBottom="0dp"
-    android:layout_marginRight="3dp"
     android:layout_marginLeft="3dp"
-    card:cardElevation="4dp"
+    android:layout_marginRight="3dp"
+    android:layout_marginTop="0dp"
     card:cardCornerRadius="10dp"
+    card:cardElevation="4dp"
     card:cardPreventCornerOverlap="false"
-    card:cardUseCompatPadding="true"
-    >
+    card:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:id="@+id/idRlCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        
+
         <ImageView
             android:id="@+id/idIvImagePersonalItem"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/personal_image"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:src="@drawable/personal_image" />
 
         <TextView
             android:id="@+id/idTvNamePesonalItem"
@@ -51,10 +50,10 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/idTbCardPersonal"
             android:layout_width="match_parent"
-            android:layout_centerHorizontal="true"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:layout_height="wrap_content"
-            android:layout_below="@id/idIvImagePersonalItem">
+            android:layout_below="@id/idIvImagePersonalItem"
+            android:layout_centerHorizontal="true"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
         </android.support.v7.widget.Toolbar>
 
