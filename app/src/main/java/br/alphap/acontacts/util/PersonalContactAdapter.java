@@ -1,20 +1,15 @@
 package br.alphap.acontacts.util;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.List;
 
 import br.alphap.acontacts.R;
 import br.alphap.acontacts.io.database.ADatabaseManager;
@@ -39,6 +34,7 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.context = context;
         this.databaseManager = databaseManager;
     }
+
 
     public void setOnItemClickListenerProvider(OnItemClickListenerProvider listener) {
         this.listener = listener;
@@ -94,17 +90,7 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             final PersonalContact contact = databaseManager.get(position);
 
             if (contact.getImageData() != null) {
-                final ImageView imageView = holder.imageViewPersonal;
-                imageView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int width = imageView.getMeasuredWidth();
-                        int height = imageView.getMeasuredHeight();
-
-                        Bitmap image = Bitmap.createScaledBitmap(contact.getImageData(), width, height, true);
-                        imageView.setImageBitmap(image);
-                    }
-                });
+                holder.imageViewPersonal.setImageBitmap(contact.getImageData());
             } else {
                 holder.imageViewPersonal.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),
                         R.drawable.personal_image));
@@ -132,7 +118,6 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     protected class PersonalContactVH extends RecyclerView.ViewHolder {
-
         public ImageView imageViewPersonal;
         public TextView textViewName;
         public TextView textViewPhone;
@@ -142,6 +127,7 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             super(itemView);
 
             imageViewPersonal = (ImageView) itemView.findViewById(R.id.idIvImagePersonalItem);
+
             textViewName = (TextView) itemView.findViewById(R.id.idTvNamePesonalItem);
             textViewPhone = (TextView) itemView.findViewById(R.id.idTvPhonePesonalItem);
 
@@ -161,7 +147,6 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
             });
         }
-
     }
 
     public interface OnItemClickListenerProvider {
@@ -170,5 +155,6 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public interface OnCardMenuItemListener {
         public boolean onItemSelected(MenuItem item, View view, int position);
+
     }
 }

@@ -3,7 +3,6 @@ package br.alphap.acontacts;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -81,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         super.onStart();
 
         adapter = new PersonalContactAdapter(this, databaseManager);
-        recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListenerProvider(this);
 
@@ -135,6 +133,12 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recyclerView.setAdapter(adapter);
     }
 
     private String getMessageFormated(String modelMsg, int position) {

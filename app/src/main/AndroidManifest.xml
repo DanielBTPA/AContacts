@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".manager.ManagerContactActivity" />
+        <activity android:name=".manager.ManagerContactActivity"
+            android:windowSoftInputMode="stateHidden"/>
 
         <activity
             android:name=".manager.ManagerContactActivity$RestoreToDefaultImage"

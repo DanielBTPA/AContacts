@@ -244,6 +244,14 @@ public class ManagerContactActivity extends AppCompatActivity {
         contact.setName(edPersonalName.getText().toString());
         contact.setPhone(edPersonalPhone.getText().toString());
 
+        Bitmap bitmap = contact.getImageData();
+
+        if (bitmap != null) {
+            int size = (int) (70 * getResources().getDisplayMetrics().density);
+            bitmap = Bitmap.createScaledBitmap(bitmap, size, size, true);
+            contact.setImageData(bitmap);
+        }
+
         Intent intent = getIntent();
         intent.putExtra("contactData", contact);
         setResult(RESULT_OK, intent);
