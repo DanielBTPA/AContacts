@@ -27,12 +27,20 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private OnCardMenuItemListener menuItemClickListener;
 
 
-    private static final int PCVH = 0;
-    private static final int PCVHE = 1;
+    protected static final int PCVH = 0;
+    protected static final int PCVHE = 1;
 
     public PersonalContactAdapter(Context context, ADatabaseManager databaseManager) {
         this.context = context;
         this.databaseManager = databaseManager;
+    }
+
+    protected PersonalContactAdapter(Context context) {
+        this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
 
@@ -134,7 +142,9 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClickItem(v, getAdapterPosition());
+                   if (listener != null) {
+                       listener.onClickItem(v, getAdapterPosition());
+                   }
                 }
             });
 

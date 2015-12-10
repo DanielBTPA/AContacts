@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/idActionAbout"
-        android:title="@string/abc_main_activity_action_about"
-        app:showAsAction="never" />
+        android:id="@+id/idMainActionSearch"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/abc_main_activity_action_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
 
 
 </menu>

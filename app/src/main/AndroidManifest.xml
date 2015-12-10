@@ -11,16 +11,36 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value="br.alphap.acontacts.manager.SearchableActivity" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
         </activity>
 
-        <activity android:name=".manager.ManagerContactActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".manager.SearchableActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <activity
+            android:name=".manager.ManagerContactActivity"
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".manager.ManagerContactActivity$RestoreToDefaultImage"
@@ -30,6 +50,7 @@
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>

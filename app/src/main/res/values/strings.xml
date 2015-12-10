@@ -3,7 +3,7 @@
     <string name="cancel">Cancelar</string>
     <string name="ok">Ok</string>
     <string name="undo">Desfazer</string>
-    <string name="abc_main_activity_action_about">Sobre</string>
+    <string name="abc_main_activity_action_search">Pesquisar contato</string>
     <string name="abc_manager_activity_action_done">Pronto</string>
     <string name="abc_manager_activity_title_add">Adicionar contato</string>
     <string name="abc_manager_activity_title_edit">Editar</string>
@@ -25,4 +25,7 @@
     <string name="abc_info_contact_deleted_unformated">Contato N excluido!</string>
     <string name="abc_restore_label_activity">Remover foto</string>
     <string name="abc_info_photo_removed">Foto removida!</string>
+    <string name="abc_search_hint">Pesquisar contatos</string>
+    <string name="abc_info_title_searchable_activity">Procurar por (N) </string>
+    <string name="abc_info_card_search_empty">Nenhum resultado encontrado!</string>
 </resources>

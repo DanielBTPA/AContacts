@@ -4,8 +4,8 @@
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorPrimaryLight">#FFCDD2</color>
     <color name="colorAccent">#1976D2</color>
-    <color name="colorNormalFab">#03A9F4</color>
-    <color name="colorPressedFab">#0288D1</color>
+    <color name="colorNormalFab">#009688</color>
+    <color name="colorPressedFab">#00897B</color>
     <color name="colorRippleFab">#01579B</color>
     <color name="colorCardInfoEmpty">#1B5E20</color>
     <color name="colorCardInfoEmptyButtonText">#81C784</color>

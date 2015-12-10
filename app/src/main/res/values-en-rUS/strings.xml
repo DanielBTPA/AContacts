@@ -28,4 +28,7 @@
     <string name="abc_info_contact_deleted_unformated">Contact N excluded !</string>
     <string name="abc_restore_label_activity">Remove picture</string>
     <string name="abc_info_photo_removed">Picture removed!</string>
+    <string name="abc_search_hint">Search contacts</string>
+    <string name="abc_info_title_searchable_activity">Search to (N) </string>
+    <string name="abc_info_card_search_empty">No result found !</string>
 </resources>

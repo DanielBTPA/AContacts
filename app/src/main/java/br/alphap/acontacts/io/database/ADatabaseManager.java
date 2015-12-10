@@ -23,8 +23,14 @@ public class ADatabaseManager {
 
     public ADatabaseManager(ADatabaseOpenHelper openHelper) {
         this.openHelper = openHelper;
+    }
 
-        queryAndReturnData();
+    public ADatabaseManager(ADatabaseOpenHelper openHelper, boolean queryData) {
+        this(openHelper);
+
+        if (queryData) {
+            queryAndReturnData();
+        }
     }
 
     public void insert(PersonalContact newContact) {
@@ -54,6 +60,20 @@ public class ADatabaseManager {
         queryAndReturnData();
     }
 
+    public void replaceWithId(int id, PersonalContact newContact) {
+        SQLiteDatabase db = openHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[0], id);
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[1], newContact.getName());
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[2], newContact.getPhone());
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[3], encodeBitmap(newContact.getImageData()));
+        values.put(ADatabaseOpenHelper.COLUMNS_TABLE_CONTACTS[4], newContact.getContactType());
+        db.replace(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
+        db.close();
+
+        queryAndReturnData();
+    }
+
     public void delete(int pos) {
         SQLiteDatabase db = openHelper.getWritableDatabase();
         db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[]{"" + list.get(pos).getContactId()});
@@ -62,8 +82,26 @@ public class ADatabaseManager {
         queryAndReturnData();
     }
 
+    public void deleteWithId(int id) {
+        SQLiteDatabase db = openHelper.getWritableDatabase();
+        db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[]{"" + id});
+        db.close();
+
+        queryAndReturnData();
+    }
+
     public PersonalContact get(int pos) {
         return list.get(pos);
+    }
+
+    public PersonalContact getWithId(int id) {
+        PersonalContact contact = null;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getContactId() == id) {
+                contact = list.get(i);
+            }
+        }
+        return contact;
     }
 
     public Cursor queryDatabase() {
@@ -83,6 +121,10 @@ public class ADatabaseManager {
 
     public boolean isEmpty() {
         return list.isEmpty();
+    }
+
+    public void queryData() {
+        queryAndReturnData();
     }
 
     private final void queryAndReturnData() {
