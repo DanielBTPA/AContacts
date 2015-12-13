@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,8 @@ public class SearchableActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searchable_activity);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         recyclerView = (RecyclerView) findViewById(R.id.idRvListSearchable);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -63,7 +66,7 @@ public class SearchableActivity extends AppCompatActivity {
             public boolean onItemSelected(MenuItem item, View view, final int position) {
                 Intent intent = new Intent();
                 final List<PersonalContact> list = adapter.getResult();
-                final PersonalContact contact = list.get(position);
+  getSupportActionBar();              final PersonalContact contact = list.get(position);
 
                 if (item.getItemId() == R.id.idActionCardCall) {
                     intent.setAction(Intent.ACTION_DIAL);
@@ -132,6 +135,18 @@ public class SearchableActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
