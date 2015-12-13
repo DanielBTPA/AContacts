@@ -18,7 +18,6 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
@@ -122,9 +121,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                                     getMessageFormated(getResources().getString(R.string.abc_info_contact_deleted_unformated), position)
                                     , Snackbar.LENGTH_SHORT);
 
-                            databaseManager.delete(position);
-                            adapter.notifyItemRemoved(position);
-
+                            adapter.removeItemOnList(position);
                             sb.show();
                         }
                     });
@@ -139,15 +136,11 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 return false;
             }
         });
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        invalidateOptionsMenu();
         recyclerView.setAdapter(adapter);
     }
 
@@ -178,11 +171,22 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
         SearchManager manager = (SearchManager) getSystemService(SEARCH_SERVICE);
 
-        MenuItem item = menu.findItem(R.id.idMainActionSearch);
+        final MenuItem item = menu.findItem(R.id.idMainActionSearch);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint(getResources().getString(R.string.abc_search_hint));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                item.collapseActionView();
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
 
@@ -196,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         if (resultCode == RESULT_OK) {
             if (requestCode == ManagerContactActivity.MANAGER_CONTACT_ADD_REQUEST) {
                 PersonalContact contact = data.getParcelableExtra("contactData");
-                databaseManager.insert(contact);
+                adapter.addItemOnList(contact);
 
                 Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_saved)
                         , Snackbar.LENGTH_LONG);
@@ -205,8 +209,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     @Override
                     public void onClick(View v) {
                         int pos = databaseManager.size() - 1;
-                        databaseManager.delete(pos);
-                        adapter.notifyItemRemoved(pos);
+                        adapter.removeItemOnList(pos);
                     }
                 });
                 sb.show();
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 final PersonalContact contact = data.getParcelableExtra("contactData");
                 final PersonalContact oldContact = databaseManager.get(position);
 
-                databaseManager.replace(position, contact);
+                adapter.replaceItemOnList(position, contact);
 
                 Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_edited)
                         , Snackbar.LENGTH_LONG);
@@ -225,8 +228,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            databaseManager.replace(position, oldContact);
-                            adapter.notifyItemChanged(position);
+                            adapter.replaceItemOnList(position, oldContact);
                         }
                     });
                 }
@@ -245,6 +247,5 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
     @Override
     public void onClickItem(View v, int position) {
-        Toast.makeText(this, "Em breve..", Toast.LENGTH_SHORT).show();
     }
 }

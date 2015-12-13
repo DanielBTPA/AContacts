@@ -55,7 +55,7 @@ public class SearchableActivity extends AppCompatActivity {
         super.onStart();
 
         String query = getIntent().getStringExtra(SearchManager.QUERY);
-        adapter = new SearchableAdapter(this, databaseManager.getData(), query);
+        adapter = new SearchableAdapter(this, databaseManager, query);
         setTitle(getFormatedName(getResources().getString(R.string.abc_info_title_searchable_activity), query));
 
         adapter.setOnCardMenuItemClickListener(new OnCardMenuItemListener() {
@@ -88,9 +88,7 @@ public class SearchableActivity extends AppCompatActivity {
                                     getMessageFormated(getResources().getString(R.string.abc_info_contact_deleted_unformated), position)
                                     , Snackbar.LENGTH_SHORT);
 
-                            list.remove(position);
-                            databaseManager.deleteWithId(contact.getContactId());
-                            adapter.notifyItemRemoved(position);
+                            adapter.removeItemOnList(position, true);
 
                             sb.show();
                         }
@@ -155,11 +153,10 @@ public class SearchableActivity extends AppCompatActivity {
         if (requestCode == ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST) {
             if (resultCode == RESULT_OK) {
                 final int position = data.getIntExtra("personalPosition", 0);
-                final PersonalContact contact =  data.getParcelableExtra("contactData");
-                final PersonalContact oldContact = databaseManager.getWithId(contact.getContactId());
+                final PersonalContact contact = data.getParcelableExtra("contactData");
+                final PersonalContact oldContact = databaseManager.get(position);
 
-                databaseManager.replaceWithId(oldContact.getContactId(), contact);
-                adapter.notifyItemChanged(position);
+                adapter.replaceItemOnList(position, contact, true);
 
                 Snackbar sb = Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.abc_info_contact_edited)
                         , Snackbar.LENGTH_LONG);
@@ -169,8 +166,7 @@ public class SearchableActivity extends AppCompatActivity {
                     sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            databaseManager.replaceWithId(oldContact.getContactId(), oldContact);
-                            adapter.notifyItemChanged(position);
+                            adapter.replaceItemOnList(position, oldContact, true);
                         }
                     });
                 }

@@ -3,7 +3,6 @@ package br.alphap.acontacts.util;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,52 +10,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.alphap.acontacts.R;
+import br.alphap.acontacts.io.database.ADatabaseManager;
 
 /**
  * Created by danielbt on 09/12/15.
  */
 public final class SearchableAdapter extends PersonalContactAdapter {
 
-    private List<PersonalContact> list;
-    private List<PersonalContact> listSearched;
+    private String query;
 
-    public SearchableAdapter(Context context, List<PersonalContact> list) {
-        super(context);
-        this.list = list;
-        listSearched = new ArrayList<>();
+    public SearchableAdapter(Context context, ADatabaseManager db) {
+        super(context, db);
     }
 
-    public SearchableAdapter(Context context, List<PersonalContact> list, String query) {
-        this(context, list);
+    public SearchableAdapter(Context context, ADatabaseManager db, String query) {
+        this(context, db);
         search(query);
     }
 
     private void search(String query) {
-        listSearched.clear();
+        databaseManager.queryData();
 
-        for (int i = 0; i < list.size(); i++) {
-            PersonalContact contact = list.get(i);
+        List<PersonalContact> listSearched = databaseManager.getData();
+        List<PersonalContact> oldList = new ArrayList<>(listSearched);
+
+        databaseManager.clearData();
+        databaseManager.setQueryData(false);
+
+        for (int i = 0; i < oldList.size(); i++) {
+            PersonalContact contact = oldList.get(i);
 
             if (contact.getName().toLowerCase().startsWith(query.toLowerCase()) ||
                     contact.getName().toLowerCase().contains(query.toLowerCase()) ||
-                    contact.getName().toLowerCase().endsWith(query.toLowerCase())) {
-                listSearched.add(list.get(i));
-            } else if (contact.getPhone().startsWith(query) || contact.getPhone().contains(query) ||
-                    contact.getPhone().endsWith(query)) {
-                listSearched.add(list.get(i));
+                    contact.getName().toLowerCase().endsWith(query.toLowerCase()) ||
+                    contact.getPhone().startsWith(query) || contact.getPhone().contains(query) ||
+                            contact.getPhone().endsWith(query)) {
+                listSearched.add(contact);
             }
 
-            if (query != null) {
-                notifyItemChanged(i);
-            }
+            notifyItemChanged(i);
         }
+
+        this.query = query;
     }
 
     @Override
     public int getItemViewType(int position) {
         int viewType;
 
-        if (listSearched.isEmpty() && position == 0) {
+        if (databaseManager.isEmpty()) {
             viewType = PCVHE;
         } else {
             viewType = PCVH;
@@ -68,7 +70,7 @@ public final class SearchableAdapter extends PersonalContactAdapter {
 
     @Override
     public int getItemCount() {
-        return listSearched.isEmpty() ? PCVHE : listSearched.size();
+        return databaseManager.isEmpty() ? PCVHE : databaseManager.size();
     }
 
     @Override
@@ -76,10 +78,10 @@ public final class SearchableAdapter extends PersonalContactAdapter {
         RecyclerView.ViewHolder viewHolder = null;
 
         if (viewType == PCVH) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.card_item_personal, parent, false);
+            View view = layoutInflater.inflate(R.layout.card_item_personal, parent, false);
             viewHolder = new PersonalContactVH(view);
         } else if (viewType == PCVHE) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.card_empty_result, parent, false);
+            View view = layoutInflater.inflate(R.layout.card_empty_result, parent, false);
             viewHolder = new ContactEmptyVH(view);
         }
 
@@ -88,9 +90,9 @@ public final class SearchableAdapter extends PersonalContactAdapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if (viewHolder instanceof PersonalContactVH && !listSearched.isEmpty()) {
-            final PersonalContactVH holder = (PersonalContactVH) viewHolder;
-            final PersonalContact contact = listSearched.get(position);
+        if (viewHolder instanceof PersonalContactVH && !databaseManager.isEmpty()) {
+            PersonalContactVH holder = (PersonalContactVH) viewHolder;
+            PersonalContact contact = databaseManager.get(position);
 
             if (contact.getImageData() != null) {
                 holder.imageViewPersonal.setImageBitmap(contact.getImageData());
@@ -105,24 +107,35 @@ public final class SearchableAdapter extends PersonalContactAdapter {
                 holder.textViewName.setText(getContext().getResources().getString(R.string.abc_info_cardview_textview_name));
             }
 
-            if (contact.getPhone() != null || !contact.getPhone().equals("")) {
+            if (contact.getPhone() != null) {
                 String[] types = getContext().getResources().getStringArray(R.array.spinnerTypes);
                 holder.textViewPhone.setText(types[contact.getContactType()] + ": " + contact.getPhone());
             }
         }
     }
 
-    public List<PersonalContact> searchOnList(String search) {
+    @Override
+    public void replaceItemOnList(int position, PersonalContact contact, boolean withId) {
+        super.replaceItemOnList(position, contact, withId);
+        search(query);
+    }
+
+    @Override
+    public void removeItemOnList(int position, boolean withId) {
+        super.removeItemOnList(position, withId);
+        search(query);
+    }
+
+    public void searchOnList(String search) {
         search(search);
-        return listSearched;
     }
 
     public List<PersonalContact> getResult() {
-        return listSearched;
+        return databaseManager.getData();
     }
 
     public boolean isResultEmpty() {
-        return listSearched.isEmpty();
+        return databaseManager.isEmpty();
     }
 
 

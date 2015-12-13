@@ -21,8 +21,8 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private Context context;
 
-    private ADatabaseManager databaseManager;
-
+    protected ADatabaseManager databaseManager;
+    protected LayoutInflater layoutInflater;
     private OnItemClickListenerProvider listener;
     private OnCardMenuItemListener menuItemClickListener;
 
@@ -30,13 +30,15 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     protected static final int PCVH = 0;
     protected static final int PCVHE = 1;
 
-    public PersonalContactAdapter(Context context, ADatabaseManager databaseManager) {
-        this.context = context;
-        this.databaseManager = databaseManager;
-    }
-
     protected PersonalContactAdapter(Context context) {
         this.context = context;
+
+        layoutInflater = LayoutInflater.from(context);
+    }
+
+    public PersonalContactAdapter(Context context, ADatabaseManager databaseManager) {
+        this(context);
+        this.databaseManager = databaseManager;
     }
 
     public Context getContext() {
@@ -50,6 +52,40 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public void setOnCardMenuItemClickListener(OnCardMenuItemListener listener) {
         this.menuItemClickListener = listener;
+    }
+
+    public void addItemOnList(PersonalContact contact) {
+        databaseManager.insert(contact);
+        notifyItemInserted(databaseManager.size() + 1);
+    }
+
+    public void replaceItemOnList(int position, PersonalContact contact) {
+        databaseManager.replace(position, contact);
+        notifyItemChanged(position);
+    }
+
+    public void replaceItemOnList(int position, PersonalContact contact, boolean withId) {
+        if (withId) {
+            databaseManager.replaceWithId(databaseManager.get(position).getContactId(), contact);
+        } else {
+            databaseManager.replace(position, contact);
+        }
+
+        notifyItemChanged(position);
+    }
+
+    public void removeItemOnList(int position) {
+        databaseManager.delete(position);
+        notifyItemRemoved(position);
+    }
+
+    public void removeItemOnList(int position, boolean withId) {
+        if (withId) {
+            databaseManager.deleteWithId(databaseManager.getData().get(position).getContactId());
+        } else {
+            databaseManager.delete(position);
+        }
+        notifyItemRemoved(position);
     }
 
     @Override
@@ -76,10 +112,10 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         RecyclerView.ViewHolder holder = null;
 
         if (viewType == PCVH) {
-            View view = LayoutInflater.from(context).inflate(R.layout.card_item_personal, parent, false);
+            View view = layoutInflater.inflate(R.layout.card_item_personal, parent, false);
             holder = new PersonalContactVH(view);
         } else if (viewType == PCVHE) {
-            View view = LayoutInflater.from(context).inflate(R.layout.card_empty_mensage, parent, false);
+            View view = layoutInflater.inflate(R.layout.card_empty_mensage, parent, false);
             holder = new ContactEmptyVH(view);
         }
 
@@ -142,9 +178,9 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   if (listener != null) {
-                       listener.onClickItem(v, getAdapterPosition());
-                   }
+                    if (listener != null) {
+                        listener.onClickItem(v, getAdapterPosition());
+                    }
                 }
             });
 

@@ -18,8 +18,8 @@ import br.alphap.acontacts.util.PersonalContact;
 public class ADatabaseManager {
 
     private List<PersonalContact> list;
-
     private ADatabaseOpenHelper openHelper;
+    private boolean mQueryData;
 
     public ADatabaseManager(ADatabaseOpenHelper openHelper) {
         this.openHelper = openHelper;
@@ -28,7 +28,7 @@ public class ADatabaseManager {
     public ADatabaseManager(ADatabaseOpenHelper openHelper, boolean queryData) {
         this(openHelper);
 
-        if (queryData) {
+        if ((this.mQueryData = queryData)) {
             queryAndReturnData();
         }
     }
@@ -43,7 +43,8 @@ public class ADatabaseManager {
         db.insert(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
         db.close();
 
-        queryAndReturnData();
+        if (mQueryData)
+            queryAndReturnData();
     }
 
     public void replace(int pos, PersonalContact newContact) {
@@ -57,7 +58,8 @@ public class ADatabaseManager {
         db.replace(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
         db.close();
 
-        queryAndReturnData();
+        if (mQueryData)
+            queryAndReturnData();
     }
 
     public void replaceWithId(int id, PersonalContact newContact) {
@@ -71,7 +73,8 @@ public class ADatabaseManager {
         db.replace(ADatabaseOpenHelper.TABLE_CONTACTS, null, values);
         db.close();
 
-        queryAndReturnData();
+        if (mQueryData)
+            queryAndReturnData();
     }
 
     public void delete(int pos) {
@@ -79,7 +82,8 @@ public class ADatabaseManager {
         db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[]{"" + list.get(pos).getContactId()});
         db.close();
 
-        queryAndReturnData();
+        if (mQueryData)
+            queryAndReturnData();
     }
 
     public void deleteWithId(int id) {
@@ -87,21 +91,12 @@ public class ADatabaseManager {
         db.delete(ADatabaseOpenHelper.TABLE_CONTACTS, "_id = ?", new String[]{"" + id});
         db.close();
 
-        queryAndReturnData();
+        if (mQueryData)
+            queryAndReturnData();
     }
 
     public PersonalContact get(int pos) {
         return list.get(pos);
-    }
-
-    public PersonalContact getWithId(int id) {
-        PersonalContact contact = null;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getContactId() == id) {
-                contact = list.get(i);
-            }
-        }
-        return contact;
     }
 
     public Cursor queryDatabase() {
@@ -121,6 +116,14 @@ public class ADatabaseManager {
 
     public boolean isEmpty() {
         return list.isEmpty();
+    }
+
+    public void clearData() {
+        list.clear();
+    }
+
+    public void setQueryData(boolean queryData) {
+        this.mQueryData = queryData;
     }
 
     public void queryData() {
