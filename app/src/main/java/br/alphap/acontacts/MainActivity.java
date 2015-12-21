@@ -8,7 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,14 +27,16 @@ import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
 import br.alphap.acontacts.manager.ManagerContactActivity;
 import br.alphap.acontacts.util.PersonalContact;
-import br.alphap.acontacts.util.PersonalContactAdapter;
 import br.alphap.acontacts.util.RecyclerViewScrollDetector;
+import br.alphap.acontacts.util.components.PersonalContactAdapter;
 
 public class MainActivity extends AppCompatActivity implements PersonalContactAdapter.OnItemClickListenerProvider {
 
     private RecyclerView recyclerView;
     private PersonalContactAdapter adapter;
     private FloatingActionButton fab;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     private ADatabaseManager databaseManager;
 
@@ -39,7 +45,29 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_main);
+        setContentView(R.layout.app_main);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.dlMain);
+
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeButtonEnabled(true);
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         openHelper = new ADatabaseOpenHelper(this);
 
@@ -73,8 +101,13 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             }
 
         });
+    }
 
+    @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
+        actionBarDrawerToggle.syncState();
     }
 
     @Override
@@ -157,6 +190,14 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         return modelMsg;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
 
     @Override
     protected void onStop() {
@@ -235,6 +276,16 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 sb.show();
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     // Click do FloatingActionButton

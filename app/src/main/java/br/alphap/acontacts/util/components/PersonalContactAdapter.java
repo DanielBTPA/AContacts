@@ -1,4 +1,4 @@
-package br.alphap.acontacts.util;
+package br.alphap.acontacts.util.components;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import br.alphap.acontacts.R;
 import br.alphap.acontacts.io.database.ADatabaseManager;
+import br.alphap.acontacts.util.PersonalContact;
 
 /**
  * Created by Daniel on 27/10/2015.

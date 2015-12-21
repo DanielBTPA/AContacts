@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,9 +22,9 @@ import br.alphap.acontacts.R;
 import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
 import br.alphap.acontacts.util.PersonalContact;
-import br.alphap.acontacts.util.SearchableAdapter;
+import br.alphap.acontacts.util.components.SearchableAdapter;
 
-import static br.alphap.acontacts.util.PersonalContactAdapter.OnCardMenuItemListener;
+import static br.alphap.acontacts.util.components.PersonalContactAdapter.OnCardMenuItemListener;
 
 /**
  * Created by danielbt on 09/12/15.

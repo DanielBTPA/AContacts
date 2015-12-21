@@ -1,4 +1,4 @@
-package br.alphap.acontacts.util;
+package br.alphap.acontacts.util.components;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -11,6 +11,8 @@ import java.util.List;
 
 import br.alphap.acontacts.R;
 import br.alphap.acontacts.io.database.ADatabaseManager;
+import br.alphap.acontacts.util.PersonalContact;
+import br.alphap.acontacts.util.components.PersonalContactAdapter;
 
 /**
  * Created by danielbt on 09/12/15.
