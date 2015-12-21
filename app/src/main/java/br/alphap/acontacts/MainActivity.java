@@ -19,6 +19,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,28 +33,32 @@ import br.alphap.acontacts.util.components.PersonalContactAdapter;
 
 public class MainActivity extends AppCompatActivity implements PersonalContactAdapter.OnItemClickListenerProvider {
 
-    private RecyclerView recyclerView;
-    private PersonalContactAdapter adapter;
-    private FloatingActionButton fab;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Toolbar tbMain;
+    private PersonalContactAdapter adapter;
+    private RecyclerView recyclerView;
+    private FloatingActionButton fab;
 
     private ADatabaseManager databaseManager;
-
     private ADatabaseOpenHelper openHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.app_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.dlMain);
 
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeButtonEnabled(true);
+        tbMain = (Toolbar) findViewById(R.id.tbMain);
+        setSupportActionBar(tbMain);
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name) {
+        ActionBar ab = getSupportActionBar();
+        ab.setHomeButtonEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(true);
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, tbMain, R.string.app_name, R.string.app_name) {
 
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -71,10 +76,10 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
         openHelper = new ADatabaseOpenHelper(this);
 
-        databaseManager = new ADatabaseManager(openHelper, true);
-
         recyclerView = (RecyclerView) findViewById(R.id.idRvListMain);
         recyclerView.setHasFixedSize(true);
+
+        databaseManager = new ADatabaseManager(openHelper, true);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || databaseManager.isEmpty()) {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -150,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                             }
 
-                            Snackbar sb = Snackbar.make(findViewById(R.id.idClFab),
+                            Snackbar sb = Snackbar.make(findViewById(R.id.ClMain),
                                     getMessageFormated(getResources().getString(R.string.abc_info_contact_deleted_unformated), position)
                                     , Snackbar.LENGTH_SHORT);
 
@@ -243,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 PersonalContact contact = data.getParcelableExtra("contactData");
                 adapter.addItemOnList(contact);
 
-                Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_saved)
+                Snackbar sb = Snackbar.make(findViewById(R.id.ClMain), getResources().getString(R.string.abc_info_contact_saved)
                         , Snackbar.LENGTH_LONG);
                 sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
                 sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
@@ -261,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
                 adapter.replaceItemOnList(position, contact);
 
-                Snackbar sb = Snackbar.make(findViewById(R.id.idClFab), getResources().getString(R.string.abc_info_contact_edited)
+                Snackbar sb = Snackbar.make(findViewById(R.id.ClMain), getResources().getString(R.string.abc_info_contact_edited)
                         , Snackbar.LENGTH_LONG);
 
                 if (!contact.equals(oldContact)) {

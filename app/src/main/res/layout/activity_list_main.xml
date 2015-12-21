@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/idClFab"
+    android:id="@+id/ClMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/idFlmainList"
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/idAppBarMain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:elevation="4dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll|enterAlways">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/idRvListMain"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/tbMain"
+                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:theme="@style/AppTheme.AppBarOverlay" />
 
-        </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:background="@drawable/shadow_toolbar_compat" />
+        </LinearLayout>
 
-    </FrameLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/idRvListMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/idFbAddContact"
@@ -33,7 +52,7 @@
         android:src="@drawable/ic_person_add_white_24dp"
         app:backgroundTint="@color/colorNormalFab"
         app:borderWidth="0dp"
-        app:layout_anchor="@id/idClFab"
+        app:layout_anchor="@id/ClMain"
         app:layout_anchorGravity="right|bottom" />
 </android.support.design.widget.CoordinatorLayout>
 

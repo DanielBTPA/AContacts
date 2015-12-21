@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4CAF50</color>
-    <color name="colorPrimaryDark">#388E3C</color>
-    <color name="colorPrimaryLight">#FFCDD2</color>
-    <color name="colorAccent">#1976D2</color>
-    <color name="colorNormalFab">#009688</color>
-    <color name="colorPressedFab">#00897B</color>
-    <color name="colorRippleFab">#01579B</color>
-    <color name="colorCardInfoEmpty">#1B5E20</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryLight">#4DB6AC</color>
+    <color name="colorAccent">#0D47A1</color>
+    <color name="colorNormalFab">#FF9800</color>
+    <color name="colorPressedFab">#F57C00</color>
+    <color name="colorRippleFab">#E65100</color>
+    <color name="colorCardInfoEmpty">#00695C</color>
     <color name="colorCardInfoEmptyButtonText">#81C784</color>
-    <color name="colorChooseButtonDefaultLabel">#01579B</color>
+    <color name="colorChooseButtonDefaultLabel">#263238</color>
 </resources>
