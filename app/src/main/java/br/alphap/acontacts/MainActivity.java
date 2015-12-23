@@ -23,10 +23,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 
 import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
 import br.alphap.acontacts.manager.ManagerContactActivity;
+import br.alphap.acontacts.util.AnimObject;
 import br.alphap.acontacts.util.PersonalContact;
 import br.alphap.acontacts.util.RecyclerViewScrollDetector;
 import br.alphap.acontacts.util.components.PersonalContactAdapter;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
     private ADatabaseManager databaseManager;
     private ADatabaseOpenHelper openHelper;
+
+    private AnimObject animObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +67,6 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-
-
             }
 
             @Override
@@ -88,24 +90,8 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         }
 
         fab = (FloatingActionButton) findViewById(R.id.idFbAddContact);
+        animObject = AnimObject.animationFab(this, recyclerView, fab);
 
-        recyclerView.addOnScrollListener(new RecyclerViewScrollDetector() {
-            @Override
-            public void onScrollUp() {
-                fab.hide();
-            }
-
-            @Override
-            public void onScrollDown() {
-                fab.show();
-            }
-
-            @Override
-            public void setScrollThreshold() {
-
-            }
-
-        });
     }
 
     @Override
@@ -143,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     intent.putExtra("contactManagerType", ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST);
                     intent.putExtra("personalPosition", position);
                 } else if (item.getItemId() == R.id.idActionCardDelete) {
-                    fab.show();
+                    animObject.show();
                     AlertDialog.Builder alertEx = new AlertDialog.Builder(MainActivity.this);
                     alertEx.setMessage(getMessageFormated(getResources().getString(R.string.abc_info_contact_delete_unformated), position));
                     alertEx.setNegativeButton(getResources().getString(R.string.cancel), null);
@@ -155,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                             }
 
-                            Snackbar sb = Snackbar.make(findViewById(R.id.ClMain),
+                            Snackbar sb = Snackbar.make(findViewById(R.id.clMain),
                                     getMessageFormated(getResources().getString(R.string.abc_info_contact_deleted_unformated), position)
                                     , Snackbar.LENGTH_SHORT);
 
@@ -248,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 PersonalContact contact = data.getParcelableExtra("contactData");
                 adapter.addItemOnList(contact);
 
-                Snackbar sb = Snackbar.make(findViewById(R.id.ClMain), getResources().getString(R.string.abc_info_contact_saved)
+                Snackbar sb = Snackbar.make(findViewById(R.id.clMain), getResources().getString(R.string.abc_info_contact_saved)
                         , Snackbar.LENGTH_LONG);
                 sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
                 sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
@@ -266,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
                 adapter.replaceItemOnList(position, contact);
 
-                Snackbar sb = Snackbar.make(findViewById(R.id.ClMain), getResources().getString(R.string.abc_info_contact_edited)
+                Snackbar sb = Snackbar.make(findViewById(R.id.clMain), getResources().getString(R.string.abc_info_contact_edited)
                         , Snackbar.LENGTH_LONG);
 
                 if (!contact.equals(oldContact)) {

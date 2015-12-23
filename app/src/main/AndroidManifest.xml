@@ -16,7 +16,8 @@
             android:name="android.app.default_searchable"
             android:value="br.alphap.acontacts.manager.SearchableActivity" />
 
-        <activity android:name=".MainActivity" android:theme="@style/AppTheme.Toolbar">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.Toolbar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
