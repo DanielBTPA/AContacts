@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,14 +24,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 
 import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
 import br.alphap.acontacts.manager.ManagerContactActivity;
 import br.alphap.acontacts.util.AnimObject;
 import br.alphap.acontacts.util.PersonalContact;
-import br.alphap.acontacts.util.RecyclerViewScrollDetector;
 import br.alphap.acontacts.util.components.PersonalContactAdapter;
 
 public class MainActivity extends AppCompatActivity implements PersonalContactAdapter.OnItemClickListenerProvider {
@@ -40,12 +39,11 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
     private Toolbar tbMain;
     private PersonalContactAdapter adapter;
     private RecyclerView recyclerView;
-    private FloatingActionButton fab;
 
     private ADatabaseManager databaseManager;
     private ADatabaseOpenHelper openHelper;
 
-    private AnimObject animObject;
+    private AnimObject animObjectToolbar, animObjectFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +79,16 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         recyclerView = (RecyclerView) findViewById(R.id.idRvListMain);
         recyclerView.setHasFixedSize(true);
 
+        View v;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            v = findViewById(R.id.tbMain);
+        } else {
+            v = findViewById(R.id.llMainBar);
+        }
+
+        animObjectToolbar = AnimObject.animateOnRecyclerView(recyclerView, v, AnimObject.RECYCLER_ANIM_TOOLBAR_TRANSLATE);
+
         databaseManager = new ADatabaseManager(openHelper, true);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || databaseManager.isEmpty()) {
@@ -89,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         }
 
-        fab = (FloatingActionButton) findViewById(R.id.idFbAddContact);
-        animObject = AnimObject.animationFab(this, recyclerView, fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.idFbAddContact);
+        animObjectFab = AnimObject.animateOnRecyclerView(recyclerView, fab, AnimObject.RECYCLER_ANIM_FAB_TRANSLATE);
 
     }
 
@@ -129,7 +137,9 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     intent.putExtra("contactManagerType", ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST);
                     intent.putExtra("personalPosition", position);
                 } else if (item.getItemId() == R.id.idActionCardDelete) {
-                    animObject.show();
+                    animObjectFab.reset();
+                    animObjectToolbar.reset();
+
                     AlertDialog.Builder alertEx = new AlertDialog.Builder(MainActivity.this);
                     alertEx.setMessage(getMessageFormated(getResources().getString(R.string.abc_info_contact_delete_unformated), position));
                     alertEx.setNegativeButton(getResources().getString(R.string.cancel), null);

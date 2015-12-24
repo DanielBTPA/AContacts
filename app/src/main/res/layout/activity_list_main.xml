@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/clMain"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/idAppBarMain"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/idRvListMain"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="?attr/actionBarSize"
+        />
+
+    <RelativeLayout
+        android:id="@+id/llMainBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/tbMain"
@@ -19,31 +25,33 @@
             android:background="@color/colorPrimary"
             android:fitsSystemWindows="true"
             android:minHeight="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:theme="@style/AppTheme.AppBarOverlay" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
+            android:layout_below="@id/tbMain"
             android:background="@drawable/shadow_toolbar_compat" />
 
-    </android.support.design.widget.AppBarLayout>
+    </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/idRvListMain"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/clMain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:layout_height="match_parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/idFbAddContact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:onClick="onClickAddContact"
-        android:src="@drawable/ic_person_add_white_24dp"
-        app:backgroundTint="@color/colorNormalFab"
-        app:borderWidth="0dp"
-        app:layout_anchor="@id/clMain"
-        app:layout_anchorGravity="right|bottom" />
-</android.support.design.widget.CoordinatorLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/idFbAddContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:onClick="onClickAddContact"
+            android:src="@drawable/ic_person_add_white_24dp"
+            app:backgroundTint="@color/colorNormalFab"
+            app:borderWidth="0dp"
+            app:layout_anchor="@id/clMain"
+            app:layout_anchorGravity="right|bottom" />
+    </android.support.design.widget.CoordinatorLayout>
 
+</FrameLayout>

@@ -1,8 +1,7 @@
 package br.alphap.acontacts.util;
 
-import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -13,46 +12,62 @@ import br.alphap.acontacts.R;
  */
 public class AnimObject {
 
+    public static final int[] RECYCLER_ANIM_FAB_TRANSLATE = {R.anim.anim_translate_show_fab, R.anim.anim_translate_hide_fab};
+    public static final int[] RECYCLER_ANIM_TOOLBAR_TRANSLATE = {R.anim.anim_translate_show_toolbar, R.anim.anim_translate_hide_toolbar};
+
+    private View viewToAnimation;
+    private int[] resources;
+    private boolean isHide;
+
     private AnimObject() {
     }
 
-    private RecyclerViewScrollDetector detector;
-
     public void show() {
-        detector.onScrollDown();
-
+        viewShow();
     }
 
     public void hide() {
-        detector.onScrollUp();
+        viewHide();
     }
 
-    public static AnimObject animationFab(final Context context, RecyclerView recyclerView, final FloatingActionButton fab) {
-        AnimObject animObject = new AnimObject();
+    public static AnimObject animateOnRecyclerView(final RecyclerView recyclerView, final View viewToAnimation, final int[] resources) {
+        final AnimObject animObject = new AnimObject();
+        animObject.viewToAnimation = viewToAnimation;
+        animObject.resources = resources;
 
-        animObject.detector = new RecyclerViewScrollDetector() {
+        recyclerView.addOnScrollListener(new RecyclerViewScrollDetector() {
             @Override
             public void onScrollUp() {
-                Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_show_fab);
-                fab.startAnimation(animation);
+                animObject.viewHide();
             }
 
             @Override
             public void onScrollDown() {
-                Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_hide_fab);
-                fab.startAnimation(animation);
+                animObject.viewShow();
             }
-
-            @Override
-            public void onScrolled(int distance) {
-
-            }
-        };
-
-
-        recyclerView.addOnScrollListener(animObject.detector);
+        });
 
         return animObject;
     }
 
+    public void reset() {
+        Animation animation = viewToAnimation.getAnimation();
+
+        if (animation.isInitialized() && isHide) {
+            viewToAnimation.clearAnimation();
+            viewHide();
+        }
+    }
+
+    private void viewShow() {
+        Animation animation = AnimationUtils.loadAnimation(viewToAnimation.getContext(), resources[0]);
+        viewToAnimation.startAnimation(animation);
+    }
+
+    private void viewHide() {
+        isHide = true;
+
+        Animation animation = AnimationUtils.loadAnimation(viewToAnimation.getContext(), resources[1]);
+        viewToAnimation.startAnimation(animation);
+    }
 }
