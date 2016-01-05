@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSpinner;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
@@ -39,7 +40,8 @@ public class ManagerContactActivity extends AppCompatActivity {
 
     private ImageView ivPersonalPic;
     private EditText edPersonalName, edPersonalPhone;
-    private Spinner spContactType;
+    private TextInputLayout textInputLayoutPhone;
+    private AppCompatSpinner spContactType;
 
     private String[] phonetype;
 
@@ -63,7 +65,9 @@ public class ManagerContactActivity extends AppCompatActivity {
         edPersonalPhone = (EditText) findViewById(R.id.idEtManagerPhone);
         edPersonalPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
-        spContactType = (Spinner) findViewById(R.id.idSpManagerSelectedType);
+        textInputLayoutPhone = (TextInputLayout) findViewById(R.id.textInputLayoutPhone);
+
+        spContactType = (AppCompatSpinner) findViewById(R.id.idSpManagerSelectedType);
 
         phonetype = getResources().getStringArray(R.array.spinnerTypes);
 
@@ -94,7 +98,7 @@ public class ManagerContactActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 contact.setContactType(position);
-                edPersonalPhone.setHint(phonetype[position]);
+                textInputLayoutPhone.setHint(phonetype[position]);
             }
 
             @Override

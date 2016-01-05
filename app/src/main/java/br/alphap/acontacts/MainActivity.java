@@ -24,12 +24,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 
 import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
 import br.alphap.acontacts.manager.ManagerContactActivity;
-import br.alphap.acontacts.util.AnimObject;
 import br.alphap.acontacts.util.PersonalContact;
+import br.alphap.acontacts.util.RecyclerViewScrollDetector;
 import br.alphap.acontacts.util.components.PersonalContactAdapter;
 
 public class MainActivity extends AppCompatActivity implements PersonalContactAdapter.OnItemClickListenerProvider {
@@ -42,8 +43,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
     private ADatabaseManager databaseManager;
     private ADatabaseOpenHelper openHelper;
-
-    private AnimObject animObjectToolbar, animObjectFab;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             v = findViewById(R.id.llMainBar);
         }
 
-        animObjectToolbar = AnimObject.animateOnRecyclerView(recyclerView, v, AnimObject.RECYCLER_ANIM_TOOLBAR_TRANSLATE);
-
         databaseManager = new ADatabaseManager(openHelper, true);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || databaseManager.isEmpty()) {
@@ -97,8 +95,19 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.idFbAddContact);
-        animObjectFab = AnimObject.animateOnRecyclerView(recyclerView, fab, AnimObject.RECYCLER_ANIM_FAB_TRANSLATE);
+        fab = (FloatingActionButton) findViewById(R.id.idFbAddContact);
+
+        recyclerView.addOnScrollListener(new RecyclerViewScrollDetector() {
+            @Override
+            public void onScrollUp() {
+                fab.show();
+            }
+
+            @Override
+            public void onScrollDown() {
+                fab.hide();
+            }
+        });
 
     }
 
@@ -137,8 +146,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     intent.putExtra("contactManagerType", ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST);
                     intent.putExtra("personalPosition", position);
                 } else if (item.getItemId() == R.id.idActionCardDelete) {
-                    animObjectFab.reset();
-                    animObjectToolbar.reset();
+                    fab.show();
 
                     AlertDialog.Builder alertEx = new AlertDialog.Builder(MainActivity.this);
                     alertEx.setMessage(getMessageFormated(getResources().getString(R.string.abc_info_contact_delete_unformated), position));
