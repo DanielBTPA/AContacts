@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -176,7 +177,7 @@ public class SearchableActivity extends AppCompatActivity {
                         , Snackbar.LENGTH_LONG);
 
                 if (!contact.equals(oldContact)) {
-                    sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
+                    sb.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                     sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

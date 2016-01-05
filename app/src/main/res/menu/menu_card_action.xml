@@ -4,23 +4,23 @@
 
     <item
         android:id="@+id/idActionCardCall"
-        android:icon="@drawable/ic_call_indigo_200_24dp"
+        android:icon="@drawable/ic_call_blue_700_24dp"
         android:title="@string/abc_cardview_info_action_call"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/idActionCardMessage"
-        android:icon="@drawable/ic_sms_indigo_200_24dp"
+        android:icon="@drawable/ic_sms_blue_700_24dp"
         android:title="@string/abc_cardview_info_action_msg"
         app:showAsAction="always" />
     <item
         android:id="@+id/idActionCardEdit"
-        android:icon="@drawable/ic_mode_edit_indigo_200_24dp"
+        android:icon="@drawable/ic_mode_edit_blue_700_24dp"
         android:title="@string/abc_cardview_info_action_edit"
         app:showAsAction="always" />
     <item
         android:id="@+id/idActionCardDelete"
-        android:icon="@drawable/ic_delete_indigo_200_24dp"
+        android:icon="@drawable/ic_delete_blue_700_24dp"
         android:title="@string/abc_cardview_info_action_delete"
         app:showAsAction="always" />
 

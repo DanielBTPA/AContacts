@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+    android:id="@+id/clMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,9 +9,8 @@
         android:id="@+id/idRvListMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingTop="?attr/actionBarSize"
-        />
+        android:clipToPadding="true"
+        android:paddingTop="?attr/actionBarSize" />
 
     <RelativeLayout
         android:id="@+id/llMainBar"
@@ -36,22 +35,18 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/clMain"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/idFbAddContact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:onClick="onClickAddContact"
-            android:src="@drawable/ic_person_add_white_24dp"
-            app:backgroundTint="@color/colorNormalFab"
-            app:borderWidth="0dp"
-            app:layout_anchor="@id/clMain"
-            app:layout_anchorGravity="right|bottom" />
-    </android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/idFbAddContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:onClick="onClickAddContact"
+        android:src="@drawable/ic_person_add_white_24dp"
+        app:backgroundTint="@color/colorNormalFab"
+        app:borderWidth="0dp"
+        app:layout_anchor="@id/clMain"
+        app:layout_anchorGravity="right|bottom" />
 
-</FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,27 +29,28 @@ import android.view.View;
 import br.alphap.acontacts.io.database.ADatabaseManager;
 import br.alphap.acontacts.io.database.ADatabaseOpenHelper;
 import br.alphap.acontacts.manager.ManagerContactActivity;
-import br.alphap.acontacts.util.AnimObject;
 import br.alphap.acontacts.util.PersonalContact;
+import br.alphap.acontacts.util.RecyclerViewScrollDetector;
 import br.alphap.acontacts.util.components.PersonalContactAdapter;
 
 public class MainActivity extends AppCompatActivity implements PersonalContactAdapter.OnItemClickListenerProvider {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+
     private Toolbar tbMain;
-    private PersonalContactAdapter adapter;
+
     private RecyclerView recyclerView;
+    private PersonalContactAdapter adapter;
 
     private ADatabaseManager databaseManager;
     private ADatabaseOpenHelper openHelper;
 
-    private AnimObject animObjectToolbar, animObjectFab;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.app_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.dlMain);
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 super.onDrawerClosed(drawerView);
             }
         };
+
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         openHelper = new ADatabaseOpenHelper(this);
@@ -87,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             v = findViewById(R.id.llMainBar);
         }
 
-        animObjectToolbar = AnimObject.animateOnRecyclerView(recyclerView, v, AnimObject.RECYCLER_ANIM_TOOLBAR_TRANSLATE);
-
         databaseManager = new ADatabaseManager(openHelper, true);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT || databaseManager.isEmpty()) {
@@ -97,8 +98,19 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.idFbAddContact);
-        animObjectFab = AnimObject.animateOnRecyclerView(recyclerView, fab, AnimObject.RECYCLER_ANIM_FAB_TRANSLATE);
+        fab = (FloatingActionButton) findViewById(R.id.idFbAddContact);
+
+        recyclerView.addOnScrollListener(new RecyclerViewScrollDetector() {
+            @Override
+            public void onScrollUp() {
+                fab.show();
+            }
+
+            @Override
+            public void onScrollDown() {
+                fab.hide();
+            }
+        });
 
     }
 
@@ -115,7 +127,12 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
         databaseManager.queryData();
 
-        adapter = new PersonalContactAdapter(this, databaseManager);
+        if (adapter == null) {
+            adapter = new PersonalContactAdapter(this, databaseManager);
+            recyclerView.setAdapter(adapter);
+        }
+
+        adapter.notifyDataSetChanged();
 
         adapter.setOnItemClickListenerProvider(this);
 
@@ -137,8 +154,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                     intent.putExtra("contactManagerType", ManagerContactActivity.MANAGER_CONTACT_EDIT_REQUEST);
                     intent.putExtra("personalPosition", position);
                 } else if (item.getItemId() == R.id.idActionCardDelete) {
-                    animObjectFab.reset();
-                    animObjectToolbar.reset();
+                    fab.show();
 
                     AlertDialog.Builder alertEx = new AlertDialog.Builder(MainActivity.this);
                     alertEx.setMessage(getMessageFormated(getResources().getString(R.string.abc_info_contact_delete_unformated), position));
@@ -170,12 +186,6 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 return false;
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        recyclerView.setAdapter(adapter);
     }
 
     private String getMessageFormated(String modelMsg, int position) {
@@ -246,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
 
                 Snackbar sb = Snackbar.make(findViewById(R.id.clMain), getResources().getString(R.string.abc_info_contact_saved)
                         , Snackbar.LENGTH_LONG);
-                sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
+                sb.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                 sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -260,21 +270,22 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
                 final PersonalContact contact = data.getParcelableExtra("contactData");
                 final PersonalContact oldContact = databaseManager.get(position);
 
-                adapter.replaceItemOnList(position, contact);
-
-                Snackbar sb = Snackbar.make(findViewById(R.id.clMain), getResources().getString(R.string.abc_info_contact_edited)
-                        , Snackbar.LENGTH_LONG);
+//                Log.i("Size", "Size Obj: " + contact.getImageData().length + " : Size Old: " + oldContact.getImageData().length);
 
                 if (!contact.equals(oldContact)) {
-                    sb.setActionTextColor(getResources().getColor(R.color.colorAccent));
+                    adapter.replaceItemOnList(position, contact);
+
+                    Snackbar sb = Snackbar.make(findViewById(R.id.clMain), getResources().getString(R.string.abc_info_contact_edited)
+                            , Snackbar.LENGTH_LONG);
+                    sb.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                     sb.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             adapter.replaceItemOnList(position, oldContact);
                         }
                     });
+                    sb.show();
                 }
-                sb.show();
             }
         }
     }
@@ -294,10 +305,26 @@ public class MainActivity extends AppCompatActivity implements PersonalContactAd
         Intent i = new Intent(this, ManagerContactActivity.class);
         i.addCategory(Intent.CATEGORY_DEFAULT);
         i.putExtra("contactManagerType", ManagerContactActivity.MANAGER_CONTACT_ADD_REQUEST);
+        i.putExtra("contactData", new PersonalContact());
         this.startActivityForResult(i, ManagerContactActivity.MANAGER_CONTACT_ADD_REQUEST);
     }
 
     @Override
     public void onClickItem(View v, int position) {
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle saveInstanceState) {
+        super.onRestoreInstanceState(saveInstanceState);
+        saveInstanceState.putParcelable("scrollState", recyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("scrollState"));
+        }
     }
 }

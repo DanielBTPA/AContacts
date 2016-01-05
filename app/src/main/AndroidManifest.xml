@@ -45,7 +45,7 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".manager.ManagerContactActivity$RestoreToDefaultImage"
+            android:name=".manager.ManagerContactActivity$ClearImageActivity"
             android:icon="@drawable/ic_close_red_300_48dp"
             android:label="@string/abc_restore_label_activity">
 
