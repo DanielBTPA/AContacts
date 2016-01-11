@@ -96,8 +96,8 @@ public final class SearchableAdapter extends PersonalContactAdapter {
             PersonalContactVH holder = (PersonalContactVH) viewHolder;
             PersonalContact contact = databaseManager.get(position);
 
-            if (contact.getImageData() != null) {
-                holder.imageViewPersonal.setImageBitmap(contact.getImageData());
+            if (contact.getImageAsBitmap() != null) {
+                holder.imageViewPersonal.setImageBitmap(contact.getImageAsBitmap());
             } else {
                 holder.imageViewPersonal.setImageBitmap(BitmapFactory.decodeResource(getContext().getResources(),
                         R.drawable.personal_image));

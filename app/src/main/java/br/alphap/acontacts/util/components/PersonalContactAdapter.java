@@ -1,6 +1,7 @@
 package br.alphap.acontacts.util.components;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -134,22 +135,22 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             final PersonalContactVH holder = (PersonalContactVH) viewHolder;
             final PersonalContact contact = databaseManager.get(position);
 
-            if (contact.getImageData() != null) {
-                holder.imageViewPersonal.setImageBitmap(contact.getImageData());
-            } else {
-                holder.imageViewPersonal.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.personal_image));
-            }
-
-            if (contact.getName() != null && !contact.getName().equals("")) {
+            if (contact.haveName()) {
                 holder.textViewName.setText(contact.getName());
             } else {
                 holder.textViewName.setText(context.getResources().getString(R.string.abc_info_cardview_textview_name));
             }
 
-            if (contact.getPhone() != null || !contact.getPhone().equals("")) {
+            if (contact.havePhone()) {
                 String[] types = context.getResources().getStringArray(R.array.spinnerTypes);
                 holder.textViewPhone.setText(types[contact.getContactType()] + ": " + contact.getPhone());
+            }
+
+            if (contact.haveImage()) {
+                holder.imageViewPersonal.setImageBitmap(contact.getImageAsBitmap());
+            } else {
+                holder.imageViewPersonal.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.personal_image));
             }
         }
     }
@@ -197,11 +198,10 @@ public class PersonalContactAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public interface OnItemClickListenerProvider {
-        public void onClickItem(View v, int position);
+        void onClickItem(View v, int position);
     }
 
     public interface OnCardMenuItemListener {
-        public boolean onItemSelected(MenuItem item, View view, int position);
-
+        boolean onItemSelected(MenuItem item, View view, int position);
     }
 }
